@@ -2,7 +2,7 @@
 
 A browser image studio for photo editing, graphics and everyday creative work. Picturesque is evolving through incremental releases toward advanced editing workflows, with an emphasis on approachable controls, reversible edits and local processing.
 
-Current release: 0.2.0, Studio Interface, 13 October 2026.
+Current release: 0.2.1, Professional Workspace, 13 October 2026.
 
 [Launch Picturesque](https://averydimbulb79.github.io/Picturesque/) · [Repository](https://github.com/Averydimbulb79/Picturesque)
 
@@ -13,6 +13,7 @@ The launch link requires GitHub Pages to be enabled. Source updates on the confi
 | Version | Name | Status | Purpose |
 |---|---|---|---|
 | 0.1.0 | Working Foundation | Shipped | Establish basic raster editing and layered project files |
+| 0.2.1 | Professional Workspace | Shipped; visual browser QA pending | Compact editing layout, working application menus and fullscreen |
 | 0.2.0 | Studio Interface | Shipped; visual browser QA pending | Replace the initial utility-style interface with a cohesive workspace |
 | 0.3.0 | Reliable Foundation | Planned next | Improve document state, recovery, navigation and rendering |
 | 0.4.0 | Editable Objects | Planned | Keep text and shapes editable; introduce direct transforms |
@@ -26,6 +27,22 @@ The launch link requires GitHub Pages to be enabled. Source updates on the confi
 Planned versions are direction and scope, not delivery dates or claims of implemented capability. Large releases may be split into smaller updates. Photopea-level compatibility is a long-term goal; this application currently covers a much smaller feature set.
 
 ## Update history
+
+### 0.2.1: Professional Workspace
+
+| Area | Update | Behaviour |
+|---|---|---|
+| Layout | Photoshop-inspired compact workspace | Neutral grey surfaces, denser controls, narrow tool rail and docked inspector |
+| Menus | File, Edit, Image, Layer, View and Help | Real menus trigger existing file, editing, layer and navigation actions |
+| Menu keyboard support | Arrow keys and Escape | Arrow Down opens a menu; Up/Down navigate entries; Escape closes it |
+| Canvas space | Smaller header, context bar and document strip | More vertical space is available for the image |
+| Docked layers | Layer stack stays visible below Properties or Adjustments | Changing inspector controls does not hide the layer stack |
+| Fullscreen | Dedicated header button, View menu entry and command palette entry | Uses the browser Fullscreen API; label updates on entry and exit |
+| Fullscreen recovery | Escape and browser-controlled exit | Browser fullscreen exit restores the button state |
+| Unsupported fullscreen | Inline fallback notice | Suggests the browser fullscreen control when the API is unavailable or rejected |
+
+Fullscreen is user initiated and can depend on browser permissions, embedded-page policy and platform support. This update changes the workspace layout, not the underlying raster editing capabilities. Existing version 1 projects remain supported. The menu bar exposes implemented operations; unsupported Photoshop features are not added as inactive placeholder commands.
+
 
 ### 0.2.0: Studio Interface
 
