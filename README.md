@@ -2,7 +2,7 @@
 
 A browser image studio for photo editing, graphics and everyday creative work. Picturesque is evolving through incremental releases toward advanced editing workflows, with an emphasis on approachable controls, reversible edits and local processing.
 
-Current release: 0.2.1, Professional Workspace, 13 October 2026.
+Current release: 0.2.2, Google Fonts, 13 October 2026.
 
 [Launch Picturesque](https://averydimbulb79.github.io/Picturesque/) · [Repository](https://github.com/Averydimbulb79/Picturesque)
 
@@ -13,6 +13,7 @@ The launch link requires GitHub Pages to be enabled. Source updates on the confi
 | Version | Name | Status | Purpose |
 |---|---|---|---|
 | 0.1.0 | Working Foundation | Shipped | Establish basic raster editing and layered project files |
+| 0.2.2 | Google Fonts | Shipped; live browser QA pending | Searchable font families, preview and font-aware raster text |
 | 0.2.1 | Professional Workspace | Shipped; visual browser QA pending | Compact editing layout, working application menus and fullscreen |
 | 0.2.0 | Studio Interface | Shipped; visual browser QA pending | Replace the initial utility-style interface with a cohesive workspace |
 | 0.3.0 | Reliable Foundation | Planned next | Improve document state, recovery, navigation and rendering |
@@ -27,6 +28,24 @@ The launch link requires GitHub Pages to be enabled. Source updates on the confi
 Planned versions are direction and scope, not delivery dates or claims of implemented capability. Large releases may be split into smaller updates. Photopea-level compatibility is a long-term goal; this application currently covers a much smaller feature set.
 
 ## Update history
+
+### 0.2.2: Google Fonts
+
+| Area | Update | Behaviour |
+|---|---|---|
+| Text dialog | Google Fonts family chooser | Search suggested families or type an exact Google Fonts family name |
+| Catalogue | Attempt to load the current Google Fonts catalogue | If browser/network restrictions block it, a bundled popular list remains available |
+| Scripts | Popular Latin and CJK families included in suggestions | Choose an appropriate font for the language being used |
+| Preview | Selected font, text, colour and size preview | Fonts load on demand, with a visible loading/error status |
+| Rendering | Wait for the selected font before drawing text | Failed font loading leaves the dialog open rather than silently drawing a substitute |
+| Text layout | Multiline input | Lines are drawn with 1.25× line spacing |
+| Family memory | Remember the last selected font during the session | Reused when adding the next text layer |
+| Privacy | Google stylesheet and font requests only when using the picker | Images and text are not uploaded; font requests contact Google |
+
+How to use: select Text, click the canvas, enter text, search/type a font family, check the preview and choose Add text. The Browse Google Fonts link opens the foundry catalogue in a new tab. Normal/regular style is supported in this increment. Text is still rasterised after insertion; existing text layers cannot yet be edited as text. Saved projects retain the rendered pixels, so reopening them does not require fetching the font again. The live catalogue has a popular-family fallback; direct exact-name loading does not require the catalogue.
+
+Implementation reference: [Google Fonts CSS2 API](https://developers.google.com/fonts/docs/css2).
+
 
 ### 0.2.1: Professional Workspace
 
@@ -85,7 +104,7 @@ This release keeps the existing raster engine and version 1 project format. It d
 | Image input | Browser-decoded PNG, JPEG, WebP, GIF, BMP and SVG | Format decoding depends on the browser; animation is not retained |
 | Raster painting | Brush and eraser | Round strokes; no pressure response or brush presets |
 | Shapes | Filled rectangle and ellipse | Rasterised immediately; no editable vectors |
-| Text | Add text with size and colour | Sans-serif, rasterised immediately; no later text editing |
+| Text | Add text with size and colour | Google Fonts family selection and preview; rasterised after insertion; no later text editing |
 | Selections | Rectangular area | No lasso, feathering or selection combining |
 | Crop | Crop the whole document | Raster contents outside the crop are discarded in the current state |
 | Transforms | Move, 90-degree rotation, flip, percentage resize | No on-canvas handles, arbitrary rotation or perspective |
@@ -96,7 +115,7 @@ This release keeps the existing raster engine and version 1 project format. It d
 | Export | PNG, JPEG and WebP | Visible layers flattened; JPEG transparency becomes white |
 | Projects | Version 1 .picturesque JSON files | Raster layers and settings only; no PSD compatibility |
 | Persistence | Manual project downloads | No autosave or crash recovery yet |
-| Privacy | Local image processing; no external dependencies | Optional online features, if added, will require separate design |
+| Privacy | Local image processing; Google Fonts fetched on demand | Optional online features, if added, will require separate design |
 
 ## Incremental roadmap
 
@@ -239,7 +258,7 @@ Tool shortcuts are suspended while typing in form controls or using a modal dial
 | Project input | Up to 50 layers and 150 MB file size |
 | Memory | Full raster snapshots and data URLs can consume substantial memory |
 | Browser support | Requires Canvas 2D filters, Pointer Events and native dialog support |
-| Fonts | Uses system fonts; no external font loading |
+| Fonts | Interface uses system fonts; the text picker loads selected Google Fonts online |
 | Mobile | Compact layout and toggleable inspector; desktop remains the primary workflow |
 | Validation | JavaScript syntax, control references and mocked runtime interaction checks |
 | Verification gap | Real browser rendering, pixel correctness and cross-browser behaviour still require QA |
