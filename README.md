@@ -2,7 +2,7 @@
 
 A browser image studio for photo editing, graphics and everyday creative work. Picturesque is evolving through incremental releases toward advanced editing workflows, with an emphasis on approachable controls, reversible edits and local processing.
 
-Current release: 0.4.0, Pen and Editable Paths, 16 October 2026.
+Current release: 0.4.1, Foundation Completion, 16 October 2026.
 
 [Launch Picturesque](https://averydimbulb79.github.io/Picturesque/) · [Repository](https://github.com/Averydimbulb79/Picturesque)
 
@@ -16,6 +16,7 @@ The launch link requires GitHub Pages to be enabled. Source updates on the confi
 | 0.2.2 | Google Fonts | Shipped; live browser QA pending | Searchable font families, preview and font-aware raster text |
 | 0.2.1 | Professional Workspace | Shipped; visual browser QA pending | Compact editing layout, working application menus and fullscreen |
 | 0.2.0 | Studio Interface | Shipped; visual browser QA pending | Replace the initial utility-style interface with a cohesive workspace |
+| 0.4.1 | Foundation Completion | Shipped; live-browser verification in progress | Multi-document state/recovery, transactional history and invalidation-based rendering |
 | 0.4.0 | Pen and Editable Paths | Shipped; real-browser QA pending | Editable cubic Bézier paths, anchor/handle tools and vector path export |
 | 0.3.10 | Selection Shapes and Guide Snapping | Shipped; real-browser QA pending | Elliptical/freehand selections and layer alignment to guides |
 | 0.3.9 | Gradient Fills | Shipped; real-browser QA pending | Linear/radial gradients, editable colour stops and selection clipping |
@@ -28,7 +29,7 @@ The launch link requires GitHub Pages to be enabled. Source updates on the confi
 | 0.3.2 | Rulers, Guides and Selection Inversion | Shipped; visual browser QA pending | Pixel rulers, editable guides and invert selection |
 | 0.3.1 | Text Dialog Layout | Shipped; visual browser QA pending | Wide, two-column typography dialog with persistent action buttons |
 | 0.3.0 | Type, Print and Recovery | Shipped; visual browser QA pending | Text spacing, paper presets, DPI and local session recovery |
-| 0.3.x | Remaining Foundation Work | Planned next | Improve navigation, history, document state and rendering |
+| 0.3.x foundation | Navigation, history, state and rendering | Baseline delivered through 0.4.1 | See completion checklist below |
 | 0.4.x | Remaining Editable Objects | Partially delivered | Mixed text and Bézier paths available; vector layers and direct transforms pending |
 | 0.5.0 | Layer Power | Planned | Add groups, masks, clipping and adjustment layers |
 | 0.6.0 | Selection and Retouching | Planned | Add flexible selections and repair tools |
@@ -40,6 +41,63 @@ The launch link requires GitHub Pages to be enabled. Source updates on the confi
 Planned versions are direction and scope, not delivery dates or claims of implemented capability. Large releases may be split into smaller updates. Photopea-level compatibility is a long-term goal; this application currently covers a much smaller feature set.
 
 ## Update history
+
+### 0.4.1: Foundation Completion, 16 October 2026
+
+This completes the remaining 0.3.x foundation baseline without removing the 0.4.0 pen tools. The release number remains in the current 0.4 series.
+
+| Area | Delivered | Behaviour |
+|---|---|---|
+| Documents | Up to eight open document tabs | New canvas, Open image and Open project create tabs instead of replacing another document |
+| Independent state | Each tab owns its layers, guides, paths, selections, history and view | Switching documents restores the active layer, tool, zoom and scroll position |
+| Document controls | New, rename and close | File menu supports rename/close; tab close checks documents not downloaded as projects |
+| Saved-state marker | Dot on documents awaiting a project download | Save project starts a download and clears that document's marker |
+| Close/reload guard | Browser leave warning and per-document close confirmation | Local recovery is separate from portable project backups |
+| Atomic loading | Validate and decode before changing document state | Invalid or undecodable project data leaves existing documents intact |
+| History commands | Reversible before/after document-state commands | Undo/redo moves a command between its document's stacks only after successful decoding |
+| History isolation | Independent undo/redo per tab | Starting an edit clears redo in that document only |
+| History budget | Shared estimated 64 MiB across all document histories | Each stack retains up to 25 entries; oldest commands are pruned globally as needed |
+| History inspector | Named edit list and undo/redo counts | Brush, move, shape, import and other main operations carry readable labels |
+| Slider grouping | One pointer gesture or short keyboard sequence per edit | Accessibility-driven slider input also creates history checkpoints |
+| Rendering | Separate layout/UI refresh, render invalidation and pixel compositing | Compositing is scheduled with requestAnimationFrame and skipped when raster state is unchanged |
+| Canvas allocation | Resize canvas backing stores only when dimensions change | Zoom and routine UI updates do not reset the full canvas |
+| Layer panel | Small cached thumbnails and conditional list rebuilding | Unchanged layers no longer regenerate full-resolution PNG thumbnails |
+| Rulers/guides | Cached overlay updates | Unchanged ruler coordinates and guide geometry avoid redundant rebuilding |
+| Navigation | Existing anchored zoom and Space/middle-button pan completed with guards | Pixel/line/page wheel deltas are normalised; zoom ignores invalid values and active edit gestures |
+| Workspace recovery | All open documents and their views | Startup can restore the workspace; old single-document recovery data is accepted |
+| Export safety | Version 1 project downloads remain individual documents | A multi-tab workspace is not silently substituted for a project file |
+
+#### Foundation completion checklist
+
+| Planned foundation capability | Status | Practical boundary |
+|---|---|---|
+| Document model and state isolation | Delivered | Active-document bindings remain in one buildless application file |
+| Independent document tabs | Delivered | Maximum eight documents; desktop remains the primary workflow |
+| Autosave and recovery | Delivered | Browser/site-local, latest workspace only; no cloud sync or portable auto-backup |
+| Efficient grouped history | Delivered baseline | Commands retain shared encoded raster state; no per-tile delta compression or disk-backed unlimited history |
+| Predictable history limits | Delivered | Estimated history budget excludes live canvases, selections and other browser memory |
+| Reliable asynchronous undo/redo | Delivered | Failed decoding leaves state and history stack positions unchanged |
+| Zoom and pan | Delivered | Finite scrollable workspace; viewport boundaries can limit exact zoom anchoring |
+| Renderer separation and invalidation | Delivered baseline | UI, layout, raster composite and overlay functions are separate; no WebGL/worker/tiled engine |
+| Project validation | Delivered | Dimensions, layer settings, text and paths are checked before state replacement |
+| Browser verification | In progress | See validation note below |
+
+History is command-shaped but intentionally retains shared before/after snapshots rather than operation-specific pixel patches. This provides transactional reversal and consistent support for every existing tool while keeping unchanged image strings shared. Large edited rasters can still reduce undo depth. Undo history and active selections are session-only and are not part of recovery/project files. Live tab switching preserves them.
+
+New/Open changes: image opening creates a new tab; Add image layer and clipboard paste continue to target the current document. Each project download contains only its current document. Exporting a flattened image does not clear the project-download marker. Undo after saving conservatively marks the document changed, even if its pixels happen to match a prior download. Starting a project download cannot verify that a user ultimately retained the downloaded file.
+
+Workspace recovery stores names, dirty markers, layers, editable text, paths, guides, active document and view settings. It does not preserve undo stacks or selection masks. Browser storage failures remain visible; private browsing, quota limits and another browser tab writing the same recovery key can affect availability. Closing a document removes it from subsequent workspace recovery. Save projects before closing anything that needs a durable portable copy.
+
+Validation before publication: mocked application integration checks for two-document state isolation, per-document undo/redo, failed-history atomicity, multi-document recovery, dirty close guards, cached raster invalidation, existing pen workflows and syntax. Live-browser verification follows deployment; performance on very large files and broad cross-browser coverage are not yet certified.
+
+#### Next planned increments
+
+| Order | Scope |
+|---|---|
+| 1 | Live vector shape layers and on-canvas transforms |
+| 2 | Compound paths and vector masks |
+| 3 | Further large-document optimisation driven by measured bottlenecks |
+
 
 ### 0.4.0: Pen and Editable Paths, 16 October 2026
 
@@ -84,7 +142,7 @@ Rollback point: [backup/v0.3.10-before-v0.4-pen-tool](https://github.com/Averydi
 
 | Order | Planned work | Status |
 |---|---|---|
-| 1 | Document tabs with independent state and history | Pending |
+| Completed | Document tabs with independent state and history | Delivered in 0.4.1 |
 | 2 | Live vector shape layers and direct transforms | Pending |
 | 3 | Compound-path operations and vector masks | Pending |
 
@@ -243,8 +301,8 @@ Validation: colour/near-colour and alpha fixtures; Replace/Add/Subtract/Intersec
 
 | Priority | Planned work | Status |
 |---|---|---|
-| Next | Document tabs with independent document state and history | Not implemented |
-| Following | Renderer/state separation and further memory/performance work | Not implemented |
+| Completed | Document tabs with independent document state and history | Delivered in 0.4.1 |
+| Completed baseline | Renderer/state separation and cached rendering | Delivered in 0.4.1; advanced large-document work remains |
 | Later | Vector objects and direct transform handles | Not implemented; editable mixed text delivered in 0.3.6 |
 
 
@@ -432,7 +490,7 @@ This release keeps the existing raster engine and version 1 project format. It d
 | Layers | Visibility, order, names, duplication, opacity | No groups, locks, masks or clipping |
 | Blend modes | Normal, multiply, screen, overlay, darken, lighten | Limited subset of advanced editor modes |
 | Adjustments | Brightness, contrast and saturation stored per layer | Affect the whole layer; no independent adjustment layers |
-| History | Up to 25 entries per stack with shared encoded images | 64 MiB estimated history budget can reduce depth; decoded pixels use additional memory |
+| History | Independent reversible state commands per document, 25 entries per stack | Shared 64 MiB estimated history budget can reduce depth; decoded pixels use additional memory |
 | Export | PNG, JPEG and WebP | Visible layers flattened; JPEG transparency becomes white |
 | Projects | Version 1 .picturesque JSON files | Raster layers and settings only; no PSD compatibility |
 | Persistence | Manual project downloads and local autosave | Local latest-session autosave/recovery; portable backups still require project downloads |
@@ -548,7 +606,7 @@ After a Pages update, allow deployment to finish. If an old interface remains vi
 4. Use Layers to choose the edit target, Properties for opacity/transforms, and Adjustments for colour.
 5. Save project to keep layers. Export image to produce a flattened deliverable.
 
-Opening an image replaces the current document. Add image layer inserts into the current document. Download a project for a portable backup. Wait for Recovery saved locally before relying on session recovery.
+Opening an image creates a new document tab. Add image layer inserts into the current document. Download a project for a portable backup. Wait for Recovery saved locally before relying on session recovery.
 
 ## Keyboard reference
 
