@@ -2,7 +2,7 @@
 
 A browser image studio for photo editing, graphics and everyday creative work. Picturesque is evolving through incremental releases toward advanced editing workflows, with an emphasis on approachable controls, reversible edits and local processing.
 
-Current release: 0.3.1, Text Dialog Layout, 15 October 2026.
+Current release: 0.3.2, Rulers, Guides and Selection Inversion, 15 October 2026.
 
 [Launch Picturesque](https://averydimbulb79.github.io/Picturesque/) · [Repository](https://github.com/Averydimbulb79/Picturesque)
 
@@ -16,6 +16,7 @@ The launch link requires GitHub Pages to be enabled. Source updates on the confi
 | 0.2.2 | Google Fonts | Shipped; live browser QA pending | Searchable font families, preview and font-aware raster text |
 | 0.2.1 | Professional Workspace | Shipped; visual browser QA pending | Compact editing layout, working application menus and fullscreen |
 | 0.2.0 | Studio Interface | Shipped; visual browser QA pending | Replace the initial utility-style interface with a cohesive workspace |
+| 0.3.2 | Rulers, Guides and Selection Inversion | Shipped; visual browser QA pending | Pixel rulers, editable guides and invert selection |
 | 0.3.1 | Text Dialog Layout | Shipped; visual browser QA pending | Wide, two-column typography dialog with persistent action buttons |
 | 0.3.0 | Type, Print and Recovery | Shipped; visual browser QA pending | Text spacing, paper presets, DPI and local session recovery |
 | 0.3.x | Remaining Foundation Work | Planned next | Improve navigation, history, document state and rendering |
@@ -30,6 +31,25 @@ The launch link requires GitHub Pages to be enabled. Source updates on the confi
 Planned versions are direction and scope, not delivery dates or claims of implemented capability. Large releases may be split into smaller updates. Photopea-level compatibility is a long-term goal; this application currently covers a much smaller feature set.
 
 ## Update history
+
+### 0.3.2: Rulers, Guides and Selection Inversion, 15 October 2026
+
+| Area | Update | Behaviour |
+|---|---|---|
+| Rulers | Horizontal and vertical pixel rulers | Tick spacing adjusts to zoom; rulers scroll with the canvas |
+| Guide creation | Drag from a ruler, or View > Add guide | Drag down from the top ruler for horizontal guides; right from the left ruler for vertical guides |
+| Guide positioning | Drag or keyboard arrows | Shift+arrow moves ten pixels; numeric insertion accepts an exact position |
+| Guide removal | Double-click, Delete/Backspace when focused, or drag outside the canvas | View > Clear guides removes all guides |
+| Visibility | View > Rulers and Show/hide guides | Display controls do not change exported pixels |
+| Persistence | Guide coordinates stored in projects and local recovery | Guide edits are included in undo/redo; older projects default to no guides |
+| Crop | Reposition and prune guides | Guides shift to the new origin and those outside the cropped canvas are removed |
+| Selection | Invert selection in the selection toolbar and Edit menu | Changes the editable area from inside the rectangle to outside it, within the canvas |
+| Mask behaviour | Painting, erasing and filled shapes respect inversion | Even-odd clipping retains whole-line rendering; crop switches back to a normal rectangular area |
+
+Guides are alignment references only; snapping is not implemented yet. They never appear in PNG/JPEG/WebP exports. Switching to the crop tool resets selection inversion so the rectangular crop is unambiguous. Selection inversion is temporary editor state and is not saved in project files, matching the existing selection behaviour. Ruler units are pixels in this increment, even when a canvas was created using physical units. The toolbar can scroll horizontally on smaller screens.
+
+Validation: JavaScript syntax, ruler scale calculations, guide coordinate handling and normal/inverted clipping paths checked. Real-browser visual and pointer interaction QA remains pending.
+
 
 ### 0.3.1: Text Dialog Layout, 15 October 2026
 
@@ -148,7 +168,7 @@ This release keeps the existing raster engine and version 1 project format. It d
 | Raster painting | Brush and eraser | Round strokes; no pressure response or brush presets |
 | Shapes | Filled rectangle and ellipse | Rasterised immediately; no editable vectors |
 | Text | Add text with size and colour | Google Fonts, letter spacing and leading; rasterised after insertion; no later text editing |
-| Selections | Rectangular area | No lasso, feathering or selection combining |
+| Selections | Rectangular area and inversion | No lasso, feathering or selection combining |
 | Crop | Crop the whole document | Raster contents outside the crop are discarded in the current state |
 | Transforms | Move, 90-degree rotation, flip, percentage resize | No on-canvas handles, arbitrary rotation or perspective |
 | Layers | Visibility, order, names, duplication, opacity | No groups, locks, masks or clipping |
