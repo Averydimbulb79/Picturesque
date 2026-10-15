@@ -2,7 +2,7 @@
 
 A browser image studio for photo editing, graphics and everyday creative work. Picturesque is evolving through incremental releases toward advanced editing workflows, with an emphasis on approachable controls, reversible edits and local processing.
 
-Current release: 0.3.8, Paint Bucket, 16 October 2026.
+Current release: 0.3.9, Gradient Fills, 16 October 2026.
 
 [Launch Picturesque](https://averydimbulb79.github.io/Picturesque/) · [Repository](https://github.com/Averydimbulb79/Picturesque)
 
@@ -16,6 +16,7 @@ The launch link requires GitHub Pages to be enabled. Source updates on the confi
 | 0.2.2 | Google Fonts | Shipped; live browser QA pending | Searchable font families, preview and font-aware raster text |
 | 0.2.1 | Professional Workspace | Shipped; visual browser QA pending | Compact editing layout, working application menus and fullscreen |
 | 0.2.0 | Studio Interface | Shipped; visual browser QA pending | Replace the initial utility-style interface with a cohesive workspace |
+| 0.3.9 | Gradient Fills | Shipped; real-browser QA pending | Linear/radial gradients, editable colour stops and selection clipping |
 | 0.3.8 | Paint Bucket | Shipped; real-browser QA pending | Selection-aware colour fill with tolerance and opacity |
 | 0.3.7 | Text Range Targeting Fix | Shipped; real-browser QA pending | Retained word selection and explicit whole-layer formatting |
 | 0.3.6 | Editable Mixed-format Text | Shipped; real-browser QA pending | Different fonts/sizes within a text layer, with re-editable formatting |
@@ -37,6 +38,29 @@ The launch link requires GitHub Pages to be enabled. Source updates on the confi
 Planned versions are direction and scope, not delivery dates or claims of implemented capability. Large releases may be split into smaller updates. Photopea-level compatibility is a long-term goal; this application currently covers a much smaller feature set.
 
 ## Update history
+
+### 0.3.9: Gradient Fills, 16 October 2026
+
+Rollback point: [backup/v0.3.8-before-gradient-fill](https://github.com/Averydimbulb79/Picturesque/tree/backup/v0.3.8-before-gradient-fill).
+
+| Control | Behaviour |
+|---|---|
+| Gradient / Shift+G | Drag to fill the active raster layer |
+| Linear | Drag sets start/end and direction; colours extend beyond the endpoints |
+| Radial | Drag begins at the centre and sets the outer radius |
+| Edit gradient | Two to eight colour stops, each with position, colour and opacity |
+| Colour-to-transparent | Set a stop's opacity to zero |
+| Overall opacity | 1–100%, combined with per-stop opacity |
+| Reverse | Reverses stop positions |
+| Drag preview | Temporary gradient and direction line while dragging |
+| Selection | Respects normal/inverted rectangle and colour-mask selections |
+| Layer bounds | Expands the layer to the document while retaining off-canvas pixels, within size limits |
+| Undo/recovery | A completed gradient is one edit; cancelled pointer gestures do not commit |
+
+Choose Gradient, select Linear or Radial, edit the colour stops, then drag on the canvas. Fills use source-over compositing: transparent portions reveal existing pixels rather than erasing them. Add a blank layer first for a separately adjustable gradient layer. Editable text must be rasterised before pixel fills. Gradient geometry and stop settings are session controls, not an editable vector/gradient layer; project files retain the rendered pixels. Angle/radius numeric controls, gradient presets, dithering and other gradient types remain future work. Full-resolution preview can slow large canvases.
+
+Validation: linear/radial geometry, stop sorting and reversal, alpha values, invalid stop rejection, tool wiring and syntax. Real-browser preview, raster output and pointer QA remain pending.
+
 
 ### 0.3.8: Paint Bucket, 16 October 2026
 
@@ -461,6 +485,7 @@ Opening an image replaces the current document. Add image layer inserts into the
 | Ctrl/Cmd+wheel | Pointer-anchored zoom |
 | Space+drag / middle-button drag | Pan scrollable workspace |
 | G | Paint bucket |
+| Shift+G | Gradient fill |
 | W | Magic wand |
 | Delete/Backspace | Clear selected pixels when a selection is active |
 | V | Move |
