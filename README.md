@@ -2,7 +2,7 @@
 
 A browser image studio for photo editing, graphics and everyday creative work. Picturesque is evolving through incremental releases toward advanced editing workflows, with an emphasis on approachable controls, reversible edits and local processing.
 
-Current release: 0.3.5, Colour Selections and Leaner History, 16 October 2026.
+Current release: 0.3.6, Editable Mixed-format Text, 16 October 2026.
 
 [Launch Picturesque](https://averydimbulb79.github.io/Picturesque/) · [Repository](https://github.com/Averydimbulb79/Picturesque)
 
@@ -16,6 +16,7 @@ The launch link requires GitHub Pages to be enabled. Source updates on the confi
 | 0.2.2 | Google Fonts | Shipped; live browser QA pending | Searchable font families, preview and font-aware raster text |
 | 0.2.1 | Professional Workspace | Shipped; visual browser QA pending | Compact editing layout, working application menus and fullscreen |
 | 0.2.0 | Studio Interface | Shipped; visual browser QA pending | Replace the initial utility-style interface with a cohesive workspace |
+| 0.3.6 | Editable Mixed-format Text | Shipped; real-browser QA pending | Different fonts/sizes within a text layer, with re-editable formatting |
 | 0.3.5 | Colour Selections and Leaner History | Shipped; real-browser QA pending | Colour/alpha selection presets, combination modes, previews and bounded history |
 | 0.3.4 | Clipboard, Magic Wand and Navigation | Shipped; real-browser QA pending | Clipboard images, colour selections, anchored zoom and panning |
 | 0.3.3 | Workspace-edge Rulers | Shipped; visual browser QA pending | Fixed rulers around the working area with scroll-aware canvas coordinates |
@@ -34,6 +35,41 @@ The launch link requires GitHub Pages to be enabled. Source updates on the confi
 Planned versions are direction and scope, not delivery dates or claims of implemented capability. Large releases may be split into smaller updates. Photopea-level compatibility is a long-term goal; this application currently covers a much smaller feature set.
 
 ## Update history
+
+### 0.3.6: Editable Mixed-format Text, 16 October 2026
+
+Rollback point: [backup/v0.3.5-before-rich-text](https://github.com/Averydimbulb79/Picturesque/tree/backup/v0.3.5-before-rich-text).
+
+| Area | Delivered | Behaviour |
+|---|---|---|
+| Word formatting | Multiple fonts and sizes in one text layer | Highlight words in the text box, change controls and choose Apply to selected words |
+| Text styles | Bold, italic and underline per range | Bold/italic request the selected Google Fonts variant; underline is drawn with the text |
+| Colour and spacing | Per-range colour and letter spacing | Can vary independently between words/ranges |
+| Whole-layer formatting | Apply to all text when no range is selected | Selection status identifies the target range before applying |
+| Leading | One baseline spacing for the layer | Mixed-size runs share baselines; manual line breaks are supported |
+| Preview | Mixed formatting displayed together | Large fonts are proportionally scaled for the preview |
+| Editability | Text content and formatting stored with the layer | Reopen through Properties > Edit text, Layer > Edit text or double-clicking the layer row |
+| Persistence | Structured text metadata plus a rendered pixel fallback | Projects, recovery and undo retain mixed formatting; exports remain flattened |
+| Text changes | Existing formatting retained through insertions and deletions | Inserted text inherits the neighbouring run style |
+| Pixel operations | Editable text protected from brush/eraser/shapes/selection deletion | Rasterise text first when pixel-level editing is required |
+| Transforms | Rotation/flip/resize require confirmation to rasterise | Move and canvas resizing preserve text editability |
+| Crop | Text origin adjusts to the cropped canvas | Structured text remains available for later editing |
+
+Workflow:
+
+1. Choose Text and click the canvas to create a text layer.
+2. Type the complete text in the left text box.
+3. Highlight the words to style, choose a Google font, size, bold/italic/underline, colour and spacing, then click Apply to selected words.
+4. Repeat for other words. With no range highlighted, Apply to all text changes the entire layer.
+5. Choose Add text layer or Save text layer. Formatting changes not yet applied are applied to the current range when saving.
+6. Reopen the layer to revise its words or styles. Save a project to retain editing data.
+
+The text-entry box is plain text with range selection; the adjacent preview displays the mixed typography. This increment does not add on-canvas text editing, auto-wrapping, alignment, per-line leading, text-on-path or arbitrary text transforms. Bold requests weight 700 and italic requests the italic variant. Some Google Fonts do not provide those styles; the dialog reports unavailable variants rather than silently substituting. Underline is a visual text decoration. Adjacent runs with identical formatting are merged. Text layers are limited to 100,000 UTF-16 characters and 10,000 runs. Very large fonts or long lines can extend beyond the canvas. Editing requires the relevant Google Fonts to be available; opening a saved document can still display its stored raster fallback offline. Text created before this release remains raster-only and cannot be reconstructed as editable text.
+
+Validation: mixed-style range splitting/merging; insertion/deletion formatting retention; font/size/style and multiline-baseline/underline rendering calls; invalid metadata rejection; syntax and control references. Real-browser font rendering, text-range interaction and visual QA remain pending.
+
+Next planned foundation increment remains document tabs with independent state/history. The full editable-object and direct-transform roadmap remains partially outstanding.
+
 
 ### 0.3.5: Colour Selections and Leaner History, 16 October 2026
 
@@ -66,7 +102,7 @@ Validation: colour/near-colour and alpha fixtures; Replace/Add/Subtract/Intersec
 |---|---|---|
 | Next | Document tabs with independent document state and history | Not implemented |
 | Following | Renderer/state separation and further memory/performance work | Not implemented |
-| Later | Editable text/objects and direct transform handles | Not implemented |
+| Later | Vector objects and direct transform handles | Not implemented; editable mixed text delivered in 0.3.6 |
 
 
 ### 0.3.4: Clipboard, Magic Wand and Navigation, 15 October 2026
@@ -246,7 +282,7 @@ This release keeps the existing raster engine and version 1 project format. It d
 | Image input | Browser-decoded PNG, JPEG, WebP, GIF, BMP and SVG | Format decoding depends on the browser; animation is not retained |
 | Raster painting | Brush and eraser | Round strokes; no pressure response or brush presets |
 | Shapes | Filled rectangle and ellipse | Rasterised immediately; no editable vectors |
-| Text | Add text with size and colour | Google Fonts, letter spacing and leading; rasterised after insertion; no later text editing |
+| Text | Editable mixed-font text with per-range size, colour and spacing | Regular styles; layer-wide leading; older text remains raster-only |
 | Selections | Rectangle, wand, colour/alpha presets, inversion and combination modes | No lasso, feathering or edge refinement |
 | Crop | Crop the whole document | Raster contents outside the crop are discarded in the current state |
 | Transforms | Move, 90-degree rotation, flip, percentage resize | No on-canvas handles, arbitrary rotation or perspective |
