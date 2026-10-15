@@ -2,7 +2,7 @@
 
 A browser image studio for photo editing, graphics and everyday creative work. Picturesque is evolving through incremental releases toward advanced editing workflows, with an emphasis on approachable controls, reversible edits and local processing.
 
-Current release: 0.2.2, Google Fonts, 13 October 2026.
+Current release: 0.3.0, Type, Print and Recovery, 15 October 2026.
 
 [Launch Picturesque](https://averydimbulb79.github.io/Picturesque/) · [Repository](https://github.com/Averydimbulb79/Picturesque)
 
@@ -16,7 +16,8 @@ The launch link requires GitHub Pages to be enabled. Source updates on the confi
 | 0.2.2 | Google Fonts | Shipped; live browser QA pending | Searchable font families, preview and font-aware raster text |
 | 0.2.1 | Professional Workspace | Shipped; visual browser QA pending | Compact editing layout, working application menus and fullscreen |
 | 0.2.0 | Studio Interface | Shipped; visual browser QA pending | Replace the initial utility-style interface with a cohesive workspace |
-| 0.3.0 | Reliable Foundation | Planned next | Improve document state, recovery, navigation and rendering |
+| 0.3.0 | Type, Print and Recovery | Shipped; visual browser QA pending | Text spacing, paper presets, DPI and local session recovery |
+| 0.3.x | Remaining Foundation Work | Planned next | Improve navigation, history, document state and rendering |
 | 0.4.0 | Editable Objects | Planned | Keep text and shapes editable; introduce direct transforms |
 | 0.5.0 | Layer Power | Planned | Add groups, masks, clipping and adjustment layers |
 | 0.6.0 | Selection and Retouching | Planned | Add flexible selections and repair tools |
@@ -28,6 +29,33 @@ The launch link requires GitHub Pages to be enabled. Source updates on the confi
 Planned versions are direction and scope, not delivery dates or claims of implemented capability. Large releases may be split into smaller updates. Photopea-level compatibility is a long-term goal; this application currently covers a much smaller feature set.
 
 ## Update history
+
+### 0.3.0: Type, Print and Recovery, 15 October 2026
+
+| Area | Delivered | Details |
+|---|---|---|
+| Letter spacing | Positive or negative spacing in pixels | Applied uniformly across each text line, with normal font kerning enabled |
+| Leading | Explicit line-to-line baseline distance in pixels | Used for multiline text; independent of font size |
+| Preview | Spacing and leading preview | Large text previews scale proportionally to a maximum displayed font size of 64 px |
+| Paper presets | A0–A6, B4, B5, US Letter, Legal and Tabloid | Portrait/landscape and custom dimensions |
+| Units | Pixels, millimetres, centimetres and inches | Physical dimensions are converted to pixel dimensions using the selected DPI |
+| Canvas size | Image > Canvas size or context bar button | Changes canvas bounds and DPI without resampling layers; top-left anchoring |
+| Resolution | DPI from 1 to 2400 | Stored in project files; older projects default to 96 DPI |
+| PNG export | Physical resolution metadata | Writes/replaces the PNG pHYs chunk; JPEG/WebP DPI metadata is not implemented |
+| Autosave | Latest session stored locally using IndexedDB | Debounced after edits; drawing and busy operations defer writing |
+| Recovery | Startup restore/discard prompt | Recovers layers and DPI; no automatic overwrite before the choice |
+| Storage errors | Visible recovery status | If local storage fails, the editor asks users to save a project manually |
+
+Letter spacing is sometimes called tracking. This release does not offer adjustment of individual character pairs, optical kerning controls or editable text objects. The browser must support Canvas 2D letterSpacing for nonzero spacing; unsupported browsers show an error rather than silently ignoring it. Text is still rasterised after insertion.
+
+Example: A4 portrait at 300 DPI produces 2480 × 3508 pixels. Changing DPI with physical units selected changes the pixel dimensions. With pixel units selected, the pixel dimensions stay fixed and the interpreted print size changes. Large presets at high DPI may exceed the existing 8192-per-side/24-million-total-pixel limits; reduce DPI to use them. DPI does not create additional detail in an existing image. Imported images currently default to 96 DPI rather than reading embedded resolution metadata.
+
+Autosave is a single latest-session recovery copy for this browser and site origin. It is not a downloaded backup, multi-document archive or cross-device sync. Undo history is not restored. Browser storage clearing, private browsing restrictions, quota limits and simultaneous tabs can affect recovery. Save project remains the way to keep a portable copy. Closing immediately after an edit can precede the debounce; wait for Recovery saved locally. Choosing Cancel in the startup recovery prompt discards that recovery copy. Moving layers outside a resized canvas preserves their layer pixels, while crop remains destructive in the current state.
+
+The remaining foundation work (efficient history, document tabs, cursor-anchored zoom, pan and renderer separation) is deferred to smaller 0.3.x increments, not claimed as delivered here.
+
+Validation: syntax checks; A4/physical-unit conversions; PNG resolution insertion, replacement and CRC checks; mocked autosave write, recovery, discard and storage-error paths. Live browser rendering and pixel output still need visual QA.
+
 
 ### 0.2.2: Google Fonts
 
@@ -89,7 +117,7 @@ This release keeps the existing raster engine and version 1 project format. It d
 | Layers | Add image or blank layer; duplicate, rename, reorder, hide and delete |
 | Painting | Brush and eraser with colour and size controls |
 | Selection | Rectangular selection constraining brush, eraser and shape drawing |
-| Canvas | Crop, zoom and fit |
+| Canvas | Crop, zoom, fit, physical units, paper presets and DPI |
 | Elements | Raster text, filled rectangles and ellipses |
 | Layer transforms | Move, rotate by 90 degrees, flip and resize |
 | Colour | Per-layer brightness, contrast and saturation |
@@ -104,7 +132,7 @@ This release keeps the existing raster engine and version 1 project format. It d
 | Image input | Browser-decoded PNG, JPEG, WebP, GIF, BMP and SVG | Format decoding depends on the browser; animation is not retained |
 | Raster painting | Brush and eraser | Round strokes; no pressure response or brush presets |
 | Shapes | Filled rectangle and ellipse | Rasterised immediately; no editable vectors |
-| Text | Add text with size and colour | Google Fonts family selection and preview; rasterised after insertion; no later text editing |
+| Text | Add text with size and colour | Google Fonts, letter spacing and leading; rasterised after insertion; no later text editing |
 | Selections | Rectangular area | No lasso, feathering or selection combining |
 | Crop | Crop the whole document | Raster contents outside the crop are discarded in the current state |
 | Transforms | Move, 90-degree rotation, flip, percentage resize | No on-canvas handles, arbitrary rotation or perspective |
@@ -114,12 +142,12 @@ This release keeps the existing raster engine and version 1 project format. It d
 | History | Up to 25 ordinary edit snapshots | Full snapshots can consume significant memory |
 | Export | PNG, JPEG and WebP | Visible layers flattened; JPEG transparency becomes white |
 | Projects | Version 1 .picturesque JSON files | Raster layers and settings only; no PSD compatibility |
-| Persistence | Manual project downloads | No autosave or crash recovery yet |
+| Persistence | Manual project downloads and local autosave | Local latest-session autosave/recovery; portable backups still require project downloads |
 | Privacy | Local image processing; Google Fonts fetched on demand | Optional online features, if added, will require separate design |
 
 ## Incremental roadmap
 
-### 0.3.0: Reliable Foundation
+### 0.3.x: Remaining Reliable Foundation Work
 
 | Workstream | Planned implementation | Acceptance criteria |
 |---|---|---|
@@ -227,7 +255,7 @@ After a Pages update, allow deployment to finish. If an old interface remains vi
 4. Use Layers to choose the edit target, Properties for opacity/transforms, and Adjustments for colour.
 5. Save project to keep layers. Export image to produce a flattened deliverable.
 
-Opening an image replaces the current document. Add image layer inserts into the current document. Download a project before closing or refreshing the page; autosave is planned for 0.3.0.
+Opening an image replaces the current document. Add image layer inserts into the current document. Download a project for a portable backup. Wait for Recovery saved locally before relying on session recovery.
 
 ## Keyboard reference
 
