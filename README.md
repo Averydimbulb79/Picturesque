@@ -2,7 +2,7 @@
 
 A browser image studio for photo editing, graphics and everyday creative work. Picturesque is evolving through incremental releases toward advanced editing workflows, with an emphasis on approachable controls, reversible edits and local processing.
 
-Current release: 0.3.6, Editable Mixed-format Text, 16 October 2026.
+Current release: 0.3.7, Text Range Targeting Fix, 16 October 2026.
 
 [Launch Picturesque](https://averydimbulb79.github.io/Picturesque/) · [Repository](https://github.com/Averydimbulb79/Picturesque)
 
@@ -16,6 +16,7 @@ The launch link requires GitHub Pages to be enabled. Source updates on the confi
 | 0.2.2 | Google Fonts | Shipped; live browser QA pending | Searchable font families, preview and font-aware raster text |
 | 0.2.1 | Professional Workspace | Shipped; visual browser QA pending | Compact editing layout, working application menus and fullscreen |
 | 0.2.0 | Studio Interface | Shipped; visual browser QA pending | Replace the initial utility-style interface with a cohesive workspace |
+| 0.3.7 | Text Range Targeting Fix | Shipped; real-browser QA pending | Retained word selection and explicit whole-layer formatting |
 | 0.3.6 | Editable Mixed-format Text | Shipped; real-browser QA pending | Different fonts/sizes within a text layer, with re-editable formatting |
 | 0.3.5 | Colour Selections and Leaner History | Shipped; real-browser QA pending | Colour/alpha selection presets, combination modes, previews and bounded history |
 | 0.3.4 | Clipboard, Magic Wand and Navigation | Shipped; real-browser QA pending | Clipboard images, colour selections, anchored zoom and panning |
@@ -35,6 +36,24 @@ The launch link requires GitHub Pages to be enabled. Source updates on the confi
 Planned versions are direction and scope, not delivery dates or claims of implemented capability. Large releases may be split into smaller updates. Photopea-level compatibility is a long-term goal; this application currently covers a much smaller feature set.
 
 ## Update history
+
+### 0.3.7: Text Range Targeting Fix, 16 October 2026
+
+Rollback point: [backup/v0.3.6-before-text-range-fix](https://github.com/Averydimbulb79/Picturesque/tree/backup/v0.3.6-before-text-range-fix).
+
+| Fix | Behaviour |
+|---|---|
+| Remember selected words | The formatting range is stored before focus moves to font/size/style controls |
+| Preview selection | Words may be highlighted in either the text box or the mixed-font preview |
+| Explicit target | Selected words is the default; Entire layer must be chosen deliberately |
+| No accidental fallback | A missing/collapsed selection never silently formats the whole layer |
+| Target feedback | Shows the selected snippet and character count |
+| Text edits | Typing invalidates the old range; highlight the intended words again |
+
+Highlight words, change the controls, then Apply to selected words. The range remains available when the preview redraws. Choose Entire layer when an all-text change is intended. Saving with pending formatting uses the same explicit target. This supersedes the no-selection-means-all behaviour in 0.3.6.
+
+Validation: lost-focus/collapsed native-range regression tests, explicit whole-layer targeting, preview offset calculation path and mixed-run formatting preservation. Real-browser text interaction remains pending.
+
 
 ### 0.3.6: Editable Mixed-format Text, 16 October 2026
 
@@ -60,7 +79,7 @@ Workflow:
 1. Choose Text and click the canvas to create a text layer.
 2. Type the complete text in the left text box.
 3. Highlight the words to style, choose a Google font, size, bold/italic/underline, colour and spacing, then click Apply to selected words.
-4. Repeat for other words. With no range highlighted, Apply to all text changes the entire layer.
+4. Repeat for other words. Choose Entire layer explicitly to format all text.
 5. Choose Add text layer or Save text layer. Formatting changes not yet applied are applied to the current range when saving.
 6. Reopen the layer to revise its words or styles. Save a project to retain editing data.
 
