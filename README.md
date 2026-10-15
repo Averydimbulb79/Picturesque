@@ -2,7 +2,7 @@
 
 A browser image studio for photo editing, graphics and everyday creative work. Picturesque is evolving through incremental releases toward advanced editing workflows, with an emphasis on approachable controls, reversible edits and local processing.
 
-Current release: 0.3.0, Type, Print and Recovery, 15 October 2026.
+Current release: 0.3.1, Text Dialog Layout, 15 October 2026.
 
 [Launch Picturesque](https://averydimbulb79.github.io/Picturesque/) · [Repository](https://github.com/Averydimbulb79/Picturesque)
 
@@ -16,6 +16,7 @@ The launch link requires GitHub Pages to be enabled. Source updates on the confi
 | 0.2.2 | Google Fonts | Shipped; live browser QA pending | Searchable font families, preview and font-aware raster text |
 | 0.2.1 | Professional Workspace | Shipped; visual browser QA pending | Compact editing layout, working application menus and fullscreen |
 | 0.2.0 | Studio Interface | Shipped; visual browser QA pending | Replace the initial utility-style interface with a cohesive workspace |
+| 0.3.1 | Text Dialog Layout | Shipped; visual browser QA pending | Wide, two-column typography dialog with persistent action buttons |
 | 0.3.0 | Type, Print and Recovery | Shipped; visual browser QA pending | Text spacing, paper presets, DPI and local session recovery |
 | 0.3.x | Remaining Foundation Work | Planned next | Improve navigation, history, document state and rendering |
 | 0.4.0 | Editable Objects | Planned | Keep text and shapes editable; introduce direct transforms |
@@ -29,6 +30,20 @@ The launch link requires GitHub Pages to be enabled. Source updates on the confi
 Planned versions are direction and scope, not delivery dates or claims of implemented capability. Large releases may be split into smaller updates. Photopea-level compatibility is a long-term goal; this application currently covers a much smaller feature set.
 
 ## Update history
+
+### 0.3.1: Text Dialog Layout, 15 October 2026
+
+| Area | Update | Behaviour |
+|---|---|---|
+| Desktop layout | Wider dialog, up to 960 px | Typography controls on the left, live preview and loading status on the right |
+| Typography controls | Grouped text, font, size, spacing and leading | Existing inputs and rendering behaviour are preserved |
+| Preview | Dedicated panel | Longer preview text scrolls inside its panel |
+| Actions | Footer outside the scrolling content | Cancel and Add text remain accessible |
+| Small screens | Single-column layout at 760 px and below | Content scrolls within viewport bounds |
+| Short screens | Tighter spacing and viewport-height limits | Dialog remains bounded instead of extending off screen |
+
+Validation: JavaScript syntax, parsed dialog structure and existing control IDs checked. Live browser visual inspection remains pending. This update changes layout only; raster text and font-loading limits are unchanged.
+
 
 ### 0.3.0: Type, Print and Recovery, 15 October 2026
 
