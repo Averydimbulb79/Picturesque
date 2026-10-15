@@ -2,7 +2,7 @@
 
 A browser image studio for photo editing, graphics and everyday creative work. Picturesque is evolving through incremental releases toward advanced editing workflows, with an emphasis on approachable controls, reversible edits and local processing.
 
-Current release: 0.3.10, Selection Shapes and Guide Snapping, 16 October 2026.
+Current release: 0.4.0, Pen and Editable Paths, 16 October 2026.
 
 [Launch Picturesque](https://averydimbulb79.github.io/Picturesque/) · [Repository](https://github.com/Averydimbulb79/Picturesque)
 
@@ -16,6 +16,7 @@ The launch link requires GitHub Pages to be enabled. Source updates on the confi
 | 0.2.2 | Google Fonts | Shipped; live browser QA pending | Searchable font families, preview and font-aware raster text |
 | 0.2.1 | Professional Workspace | Shipped; visual browser QA pending | Compact editing layout, working application menus and fullscreen |
 | 0.2.0 | Studio Interface | Shipped; visual browser QA pending | Replace the initial utility-style interface with a cohesive workspace |
+| 0.4.0 | Pen and Editable Paths | Shipped; real-browser QA pending | Editable cubic Bézier paths, anchor/handle tools and vector path export |
 | 0.3.10 | Selection Shapes and Guide Snapping | Shipped; real-browser QA pending | Elliptical/freehand selections and layer alignment to guides |
 | 0.3.9 | Gradient Fills | Shipped; real-browser QA pending | Linear/radial gradients, editable colour stops and selection clipping |
 | 0.3.8 | Paint Bucket | Shipped; real-browser QA pending | Selection-aware colour fill with tolerance and opacity |
@@ -28,7 +29,7 @@ The launch link requires GitHub Pages to be enabled. Source updates on the confi
 | 0.3.1 | Text Dialog Layout | Shipped; visual browser QA pending | Wide, two-column typography dialog with persistent action buttons |
 | 0.3.0 | Type, Print and Recovery | Shipped; visual browser QA pending | Text spacing, paper presets, DPI and local session recovery |
 | 0.3.x | Remaining Foundation Work | Planned next | Improve navigation, history, document state and rendering |
-| 0.4.0 | Editable Objects | Planned | Keep text and shapes editable; introduce direct transforms |
+| 0.4.x | Remaining Editable Objects | Partially delivered | Mixed text and Bézier paths available; vector layers and direct transforms pending |
 | 0.5.0 | Layer Power | Planned | Add groups, masks, clipping and adjustment layers |
 | 0.6.0 | Selection and Retouching | Planned | Add flexible selections and repair tools |
 | 0.7.0 | Photo Editing | Planned | Add tonal and colour tools for serious photo work |
@@ -39,6 +40,54 @@ The launch link requires GitHub Pages to be enabled. Source updates on the confi
 Planned versions are direction and scope, not delivery dates or claims of implemented capability. Large releases may be split into smaller updates. Photopea-level compatibility is a long-term goal; this application currently covers a much smaller feature set.
 
 ## Update history
+
+### 0.4.0: Pen and Editable Paths, 16 October 2026
+
+| Function | Controls | Current behaviour |
+|---|---|---|
+| Pen | P, then Pen: draw | Click for corner anchors; drag for a curved anchor with symmetric handles |
+| Close path | Click the first anchor or Close path | Connects the final anchor back to the first |
+| Finish open path | Finish, Enter or Escape | Keeps the path open; click its final endpoint to resume |
+| New path | New path | Starts a separately named editable path |
+| Direct selection | A, Direct selection menu, or hold Ctrl/Cmd with Pen | Drag anchors or the selected anchor's direction handles |
+| Anchor movement | Drag an anchor | Its existing handles move with it |
+| Smooth handles | Drag a handle | The opposite handle stays collinear while retaining its length |
+| Independent handles | Alt-drag a handle | Breaks the smooth constraint |
+| Constrained direction | Shift-drag a curve/handle | Snaps handle direction to 45-degree increments |
+| Convert point | Corner / smooth or Convert point mode | Converts between a corner with no handles and a smooth point |
+| Add anchor | Add anchor mode; click near a segment | Uses cubic subdivision to preserve the original curve |
+| Delete anchor | Delete anchor mode, button or Delete/Backspace | Removes the chosen anchor and reconnects remaining neighbours |
+| Fill path | Fill plus toolbar colour | Creates a new raster layer; open paths are implicitly closed for filling |
+| Stroke path | Stroke plus colour and numeric width | Creates a new raster layer with a solid round-cap/round-join stroke |
+| Make selection | Make selection plus selection mode | Converts the filled path area to a hard pixel selection |
+| Path management | Saved-path chooser, Rename, Delete path | Paths are document-level objects independent of layers |
+| SVG | SVG button | Exports the selected path as an unfilled, coloured vector stroke at the document size |
+| Persistence | Project save, recovery and undo/redo | Anchor/handle coordinates, closure and names are retained |
+
+Suggested workflow:
+
+1. Press P, then click corners or click-drag to create curves.
+2. Click the first anchor to close the path, or press Enter to finish an open one.
+3. Press A to edit. Click an anchor to expose its handles, then drag the anchor or handles. Hold Alt to move a handle independently.
+4. Use Add anchor, Delete anchor and Corner / smooth to refine the path.
+5. Fill, Stroke, Make selection or export SVG. The original path remains available for further editing.
+
+The path itself remains vector-editable. Fill and Stroke create raster output layers; later path edits do not automatically update those layers. Generate a new fill/stroke after editing or undo/remove the previous output. Path overlays and handles do not appear in normal image exports. Paths are shown when the Pen tool is active. Layer movement does not move document paths; crop shifts their coordinates to the new canvas origin.
+
+This release covers the core Bézier pen workflow, not Photoshop's complete pen/vector feature set. Still pending: compound-path boolean operations, vector shape layers, vector masks, whole-path transforms/multi-anchor selection, freeform/curvature/magnetic pen variants, pressure-sensitive brush strokes on paths, text on paths and SVG import. There is no automatic tracing of an existing pixel selection into a vector path. A document supports up to 100 paths and 10,000 anchors per path. Deleting an anchor can change neighbouring curve geometry; adding one preserves the curve. Selection conversion thresholds antialiased fill alpha at 50% and does not feather edges. Closing a two-anchor path can form a curved lens; it is not restricted to polygons.
+
+Validation: exact cubic subdivision fixtures; nearest-segment insertion; anchor/handle translation; SVG data; saved-path validation; application-initialisation and mocked pointer workflows for creation, closure, editing, conversion, deletion, snapshot isolation and stroke output. Live browser pointer/visual and exported-pixel QA remain pending.
+
+Rollback point: [backup/v0.3.10-before-v0.4-pen-tool](https://github.com/Averydimbulb79/Picturesque/tree/backup/v0.3.10-before-v0.4-pen-tool).
+
+#### Next planned increments
+
+| Order | Planned work | Status |
+|---|---|---|
+| 1 | Document tabs with independent state and history | Pending |
+| 2 | Live vector shape layers and direct transforms | Pending |
+| 3 | Compound-path operations and vector masks | Pending |
+
 
 ### 0.3.10: Selection Shapes and Guide Snapping, 16 October 2026
 
@@ -375,7 +424,7 @@ This release keeps the existing raster engine and version 1 project format. It d
 |---|---|---|
 | Image input | Browser-decoded PNG, JPEG, WebP, GIF, BMP and SVG | Format decoding depends on the browser; animation is not retained |
 | Raster painting | Brush and eraser | Round strokes; no pressure response or brush presets |
-| Shapes | Filled rectangle and ellipse | Rasterised immediately; no editable vectors |
+| Shapes and paths | Raster rectangle/ellipse plus editable cubic Bézier document paths | Fill/stroke output is raster; live vector layers are pending |
 | Text | Editable mixed-font text with per-range size, colour and spacing | Regular styles; layer-wide leading; older text remains raster-only |
 | Selections | Rectangle, ellipse, freehand lasso, wand, colour/alpha presets and combination modes | No feathering or edge refinement |
 | Crop | Crop the whole document | Raster contents outside the crop are discarded in the current state |
@@ -406,7 +455,7 @@ This release keeps the existing raster engine and version 1 project format. It d
 
 Dependency: complete the document model and history work before expanding the object system.
 
-### 0.4.0: Editable Objects
+### 0.4.x: Remaining Editable Objects
 
 | Workstream | Planned implementation | Acceptance criteria |
 |---|---|---|
@@ -523,6 +572,13 @@ Opening an image replaces the current document. Add image layer inserts into the
 | L | Freehand lasso |
 | Alt while moving | Temporarily bypass guide snapping |
 | C | Crop |
+| P | Pen tool |
+| A | Direct selection for paths |
+| Enter/Escape with Pen | Finish the current path |
+| Delete/Backspace with Pen | Delete the selected anchor |
+| Ctrl/Cmd with Pen | Temporarily edit anchors/handles |
+| Alt while dragging a handle | Move that handle independently |
+| Shift while dragging a handle | Constrain direction to 45-degree increments |
 | T | Text |
 | Escape | Clear selection; native dialogs close when focused |
 | Left/Right arrows on inspector tabs | Change inspector tab |
