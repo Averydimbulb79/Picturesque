@@ -2,7 +2,7 @@
 
 A browser image studio for photo editing, graphics and everyday creative work. Picturesque is evolving through incremental releases toward advanced editing workflows, with an emphasis on approachable controls, reversible edits and local processing.
 
-Current release: 0.3.3, Workspace-edge Rulers, 15 October 2026.
+Current release: 0.3.4, Clipboard, Magic Wand and Navigation, 15 October 2026.
 
 [Launch Picturesque](https://averydimbulb79.github.io/Picturesque/) · [Repository](https://github.com/Averydimbulb79/Picturesque)
 
@@ -16,6 +16,7 @@ The launch link requires GitHub Pages to be enabled. Source updates on the confi
 | 0.2.2 | Google Fonts | Shipped; live browser QA pending | Searchable font families, preview and font-aware raster text |
 | 0.2.1 | Professional Workspace | Shipped; visual browser QA pending | Compact editing layout, working application menus and fullscreen |
 | 0.2.0 | Studio Interface | Shipped; visual browser QA pending | Replace the initial utility-style interface with a cohesive workspace |
+| 0.3.4 | Clipboard, Magic Wand and Navigation | Shipped; real-browser QA pending | Clipboard images, colour selections, anchored zoom and panning |
 | 0.3.3 | Workspace-edge Rulers | Shipped; visual browser QA pending | Fixed rulers around the working area with scroll-aware canvas coordinates |
 | 0.3.2 | Rulers, Guides and Selection Inversion | Shipped; visual browser QA pending | Pixel rulers, editable guides and invert selection |
 | 0.3.1 | Text Dialog Layout | Shipped; visual browser QA pending | Wide, two-column typography dialog with persistent action buttons |
@@ -32,6 +33,35 @@ The launch link requires GitHub Pages to be enabled. Source updates on the confi
 Planned versions are direction and scope, not delivery dates or claims of implemented capability. Large releases may be split into smaller updates. Photopea-level compatibility is a long-term goal; this application currently covers a much smaller feature set.
 
 ## Update history
+
+### 0.3.4: Clipboard, Magic Wand and Navigation, 15 October 2026
+
+Rollback point: branch [backup/v0.3.3-before-paste-wand](https://github.com/Averydimbulb79/Picturesque/tree/backup/v0.3.3-before-paste-wand), created before this update.
+
+| Area | Delivered | Behaviour |
+|---|---|---|
+| Clipboard | Ctrl/Cmd+V image paste | Clipboard image pixels become a centred new layer; existing document dimensions remain fixed |
+| Paste action | Toolbar and Edit menu | Uses browser clipboard-read when available; otherwise suggests keyboard paste |
+| Editing safety | Normal text-field paste retained | Editor image paste does not intercept typing fields or modal dialogs |
+| Magic wand | W shortcut and tool rail button | Click a pixel to select colours within the chosen tolerance |
+| Tolerance | Whole values from 0 to 255 | Maximum per-channel RGB and alpha difference relative to the clicked seed pixel |
+| Contiguous | On by default | Four-connected flood selection; switch off to match colours across the whole canvas |
+| Sample source | Sample merged or active layer | Active-layer sampling uses original raster pixels at their document offset, before effects and opacity |
+| Selection feedback | Cyan pixel boundary | Selected areas constrain brush, eraser and filled shapes |
+| Inversion | Invert colour or rectangular selection | Selects the complement inside the canvas |
+| Delete background | Clear selected pixels and Delete/Backspace | Clears only the selected pixels on the active layer; undo supported |
+| Zoom | Ctrl/Cmd+wheel | Zooms around the pointer, with scroll adjustment subject to viewport scroll bounds |
+| Zoom readout | Fit/custom percentage synchronisation | Displays the actual scale, including fitted values |
+| Pan | Hold Space and drag, or middle-button drag | Moves the scrollable workspace without painting |
+
+Website workflow: use the browser's Copy image command, switch to Picturesque, then press Ctrl/Cmd+V. Copy image address only copies a URL and is not treated as image pixels. Websites and browsers differ in which clipboard formats they provide. The Paste image button may require clipboard permission and HTTPS; keyboard paste is the fallback. No remote image URLs are fetched by the paste handler. Pasted images larger than the document extend outside the current canvas; use Canvas size if a larger document is needed.
+
+Magic-wand workflow: select W, set tolerance and source, then click the colour to select. Adjusting tolerance requires clicking again. For background removal, select the background, choose the intended layer and use Clear selected pixels. Invert selection protects the clicked colour and edits the remainder. Each click replaces the previous selection. Add/subtract selection modes, feathering, edge refinement and anti-aliased selection masks are not yet implemented. Transparent pixels are matched by alpha regardless of hidden RGB data. Colour selections are temporary editor state and are not stored in project files. Crop clears a wand selection and requires a rectangular crop area.
+
+Pixel masks and flood-fill buffers use memory proportional to canvas area. Large images can pause during selection computation; there is no worker-based selection processing in this increment. Anchored zoom is limited to 5–400%; a small centred canvas and scroll bounds can limit exact pointer anchoring. Panning moves scrollable content; it does not introduce an infinite workspace.
+
+Validation: synthetic pixel fixtures for tolerance, connectivity, alpha and global matching; selection-mask composition paths; clipboard image filtering and error paths; navigation coordinate calculations; JavaScript syntax. Real browser clipboard permissions, raster output and pointer/visual QA remain pending. Efficient history and document tabs remain future 0.3.x work.
+
 
 ### 0.3.3: Workspace-edge Rulers, 15 October 2026
 
@@ -182,7 +212,7 @@ This release keeps the existing raster engine and version 1 project format. It d
 | Raster painting | Brush and eraser | Round strokes; no pressure response or brush presets |
 | Shapes | Filled rectangle and ellipse | Rasterised immediately; no editable vectors |
 | Text | Add text with size and colour | Google Fonts, letter spacing and leading; rasterised after insertion; no later text editing |
-| Selections | Rectangular area and inversion | No lasso, feathering or selection combining |
+| Selections | Rectangular, magic wand and inversion | No lasso, feathering or selection combining |
 | Crop | Crop the whole document | Raster contents outside the crop are discarded in the current state |
 | Transforms | Move, 90-degree rotation, flip, percentage resize | No on-canvas handles, arbitrary rotation or perspective |
 | Layers | Visibility, order, names, duplication, opacity | No groups, locks, masks or clipping |
@@ -313,6 +343,11 @@ Opening an image replaces the current document. Add image layer inserts into the
 | Ctrl/Cmd+K | Open command palette |
 | Ctrl/Cmd+Z | Undo |
 | Ctrl/Cmd+Shift+Z | Redo |
+| Ctrl/Cmd+V | Paste clipboard image as a layer |
+| Ctrl/Cmd+wheel | Pointer-anchored zoom |
+| Space+drag / middle-button drag | Pan scrollable workspace |
+| W | Magic wand |
+| Delete/Backspace | Clear selected pixels when a selection is active |
 | V | Move |
 | B | Brush |
 | E | Eraser |
