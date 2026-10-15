@@ -2,7 +2,7 @@
 
 A browser image studio for photo editing, graphics and everyday creative work. Picturesque is evolving through incremental releases toward advanced editing workflows, with an emphasis on approachable controls, reversible edits and local processing.
 
-Current release: 0.3.9, Gradient Fills, 16 October 2026.
+Current release: 0.3.10, Selection Shapes and Guide Snapping, 16 October 2026.
 
 [Launch Picturesque](https://averydimbulb79.github.io/Picturesque/) · [Repository](https://github.com/Averydimbulb79/Picturesque)
 
@@ -16,6 +16,7 @@ The launch link requires GitHub Pages to be enabled. Source updates on the confi
 | 0.2.2 | Google Fonts | Shipped; live browser QA pending | Searchable font families, preview and font-aware raster text |
 | 0.2.1 | Professional Workspace | Shipped; visual browser QA pending | Compact editing layout, working application menus and fullscreen |
 | 0.2.0 | Studio Interface | Shipped; visual browser QA pending | Replace the initial utility-style interface with a cohesive workspace |
+| 0.3.10 | Selection Shapes and Guide Snapping | Shipped; real-browser QA pending | Elliptical/freehand selections and layer alignment to guides |
 | 0.3.9 | Gradient Fills | Shipped; real-browser QA pending | Linear/radial gradients, editable colour stops and selection clipping |
 | 0.3.8 | Paint Bucket | Shipped; real-browser QA pending | Selection-aware colour fill with tolerance and opacity |
 | 0.3.7 | Text Range Targeting Fix | Shipped; real-browser QA pending | Retained word selection and explicit whole-layer formatting |
@@ -38,6 +39,32 @@ The launch link requires GitHub Pages to be enabled. Source updates on the confi
 Planned versions are direction and scope, not delivery dates or claims of implemented capability. Large releases may be split into smaller updates. Photopea-level compatibility is a long-term goal; this application currently covers a much smaller feature set.
 
 ## Update history
+
+### 0.3.10: Selection Shapes and Guide Snapping, 16 October 2026
+
+Rollback point: [backup/v0.3.9-before-lasso-guide-snapping](https://github.com/Averydimbulb79/Picturesque/tree/backup/v0.3.9-before-lasso-guide-snapping).
+
+| Feature | Controls and behaviour |
+|---|---|
+| Elliptical selection | Choose Ellipse in the selection toolbar or Select menu; Shift+M shortcut |
+| Freehand selection | Choose Freehand lasso or press L; drag a path and release to close it |
+| Selection modes | Replace, Add, Subtract and Intersect apply to the new shapes |
+| Pixel operations | Brush, eraser, bucket, gradients and selected-pixel deletion respect the shape mask |
+| Inversion | Invert selection selects the complement of the new shape |
+| Shape preview | Dashed outline during the drag; cyan pixel boundary after completion |
+| Guide snapping | Enabled by default in the Move toolbar; also toggle through View > Snap to guides |
+| Snap anchors | Left/right/top/bottom and centre of visible raster content, including rendered text |
+| Snap distance | Six screen pixels, converted to document coordinates at the current zoom |
+| Bypass | Hold Alt while moving, or switch off Snap to guides |
+| Feedback | A guide turns gold when it is the active snap target |
+| History | Layer movement remains one undoable drag; text metadata is preserved |
+
+Guides must be visible for snapping; rulers may be hidden. Guides outside the current canvas are ignored. Transparent layers use their full raster bounds as the fallback; other layers use the nontransparent pixel bounds. The first move of a large layer can pause while those bounds are scanned; bounds are cached until its pixels change. Snapping currently applies to layer movement only, not resizing, rotation, brush strokes or guide creation.
+
+Ellipse and lasso masks use hard pixel boundaries without feathering or antialiasing. Lasso uses an even-odd polygon fill and closes the final point to the first. Up to 4096 sampled points are retained per gesture. There is no magnetic/polygonal lasso or edge refinement yet. Selections remain temporary state; layer positions and guides continue to persist normally. Cancelling a selection gesture leaves the previous selection intact.
+
+Validation: ellipse/polygon mask fixtures and clipping; snapping near edges/centres; threshold, zoom and Alt bypass; syntax/control references. Real-browser pointer and visual QA remain pending.
+
 
 ### 0.3.9: Gradient Fills, 16 October 2026
 
@@ -350,7 +377,7 @@ This release keeps the existing raster engine and version 1 project format. It d
 | Raster painting | Brush and eraser | Round strokes; no pressure response or brush presets |
 | Shapes | Filled rectangle and ellipse | Rasterised immediately; no editable vectors |
 | Text | Editable mixed-font text with per-range size, colour and spacing | Regular styles; layer-wide leading; older text remains raster-only |
-| Selections | Rectangle, wand, colour/alpha presets, inversion and combination modes | No lasso, feathering or edge refinement |
+| Selections | Rectangle, ellipse, freehand lasso, wand, colour/alpha presets and combination modes | No feathering or edge refinement |
 | Crop | Crop the whole document | Raster contents outside the crop are discarded in the current state |
 | Transforms | Move, 90-degree rotation, flip, percentage resize | No on-canvas handles, arbitrary rotation or perspective |
 | Layers | Visibility, order, names, duplication, opacity | No groups, locks, masks or clipping |
@@ -492,6 +519,9 @@ Opening an image replaces the current document. Add image layer inserts into the
 | B | Brush |
 | E | Eraser |
 | M | Rectangular selection |
+| Shift+M | Elliptical selection |
+| L | Freehand lasso |
+| Alt while moving | Temporarily bypass guide snapping |
 | C | Crop |
 | T | Text |
 | Escape | Clear selection; native dialogs close when focused |
