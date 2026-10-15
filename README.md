@@ -2,7 +2,7 @@
 
 A browser image studio for photo editing, graphics and everyday creative work. Picturesque is evolving through incremental releases toward advanced editing workflows, with an emphasis on approachable controls, reversible edits and local processing.
 
-Current release: 0.3.7, Text Range Targeting Fix, 16 October 2026.
+Current release: 0.3.8, Paint Bucket, 16 October 2026.
 
 [Launch Picturesque](https://averydimbulb79.github.io/Picturesque/) · [Repository](https://github.com/Averydimbulb79/Picturesque)
 
@@ -16,6 +16,7 @@ The launch link requires GitHub Pages to be enabled. Source updates on the confi
 | 0.2.2 | Google Fonts | Shipped; live browser QA pending | Searchable font families, preview and font-aware raster text |
 | 0.2.1 | Professional Workspace | Shipped; visual browser QA pending | Compact editing layout, working application menus and fullscreen |
 | 0.2.0 | Studio Interface | Shipped; visual browser QA pending | Replace the initial utility-style interface with a cohesive workspace |
+| 0.3.8 | Paint Bucket | Shipped; real-browser QA pending | Selection-aware colour fill with tolerance and opacity |
 | 0.3.7 | Text Range Targeting Fix | Shipped; real-browser QA pending | Retained word selection and explicit whole-layer formatting |
 | 0.3.6 | Editable Mixed-format Text | Shipped; real-browser QA pending | Different fonts/sizes within a text layer, with re-editable formatting |
 | 0.3.5 | Colour Selections and Leaner History | Shipped; real-browser QA pending | Colour/alpha selection presets, combination modes, previews and bounded history |
@@ -36,6 +37,29 @@ The launch link requires GitHub Pages to be enabled. Source updates on the confi
 Planned versions are direction and scope, not delivery dates or claims of implemented capability. Large releases may be split into smaller updates. Photopea-level compatibility is a long-term goal; this application currently covers a much smaller feature set.
 
 ## Update history
+
+### 0.3.8: Paint Bucket, 16 October 2026
+
+Rollback point: [backup/v0.3.7-before-paint-bucket](https://github.com/Averydimbulb79/Picturesque/tree/backup/v0.3.7-before-paint-bucket).
+
+| Control | Behaviour |
+|---|---|
+| Paint bucket / G | Click to fill matching pixels on the active raster layer |
+| Colour | Uses the toolbar colour picker |
+| Opacity | 1–100%, composited over existing pixels |
+| Tolerance | 0–255, compared with the clicked source colour/alpha |
+| Contiguous | On: fills a four-connected region; off: fills matching pixels throughout the document |
+| Sample merged | Uses visible composite colours to determine the area; fill is still applied only to the active layer |
+| Active-layer sampling | Switch off Sample merged to use the original active-layer raster colours |
+| Selection | Rectangle, colour-mask and inverted selections constrain the fill; contiguous traversal stops at selection boundaries |
+| Editable text | Rasterisation is required before pixel filling |
+| Layer bounds | Expand to include the document while retaining existing off-canvas layer pixels, within size limits |
+| History/recovery | Fill is one undoable edit and participates in local autosave |
+
+Tolerance/Contiguous/Sample merged controls are shared with the magic wand. Changing those controls affects subsequent clicks. Fully transparent source pixels match by alpha regardless of hidden RGB. The fill operation uses hard selection boundaries; anti-aliasing, gradients, pattern fills and worker-based large-image processing are not included. A fill may pause on very large images. If expanded layer bounds exceed current size limits, the operation is rejected before changing the document.
+
+Validation: contiguous/global matching; selection-boundary barriers; inverted-mask constraints; RGB/opacity fill generation; syntax and tool/control linkage. Real-browser pixel output and interaction QA remain pending.
+
 
 ### 0.3.7: Text Range Targeting Fix, 16 October 2026
 
@@ -284,7 +308,7 @@ This release keeps the existing raster engine and version 1 project format. It d
 |---|---|
 | Documents | New transparent canvas; open an image |
 | Layers | Add image or blank layer; duplicate, rename, reorder, hide and delete |
-| Painting | Brush and eraser with colour and size controls |
+| Painting | Brush, eraser and paint bucket with colour controls |
 | Selection | Rectangular selection constraining brush, eraser and shape drawing |
 | Canvas | Crop, zoom, fit, physical units, paper presets and DPI |
 | Elements | Raster text, filled rectangles and ellipses |
@@ -436,6 +460,7 @@ Opening an image replaces the current document. Add image layer inserts into the
 | Ctrl/Cmd+V | Paste clipboard image as a layer |
 | Ctrl/Cmd+wheel | Pointer-anchored zoom |
 | Space+drag / middle-button drag | Pan scrollable workspace |
+| G | Paint bucket |
 | W | Magic wand |
 | Delete/Backspace | Clear selected pixels when a selection is active |
 | V | Move |
