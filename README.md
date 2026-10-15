@@ -16,7 +16,7 @@ The launch link requires GitHub Pages to be enabled. Source updates on the confi
 | 0.2.2 | Google Fonts | Shipped; live browser QA pending | Searchable font families, preview and font-aware raster text |
 | 0.2.1 | Professional Workspace | Shipped; visual browser QA pending | Compact editing layout, working application menus and fullscreen |
 | 0.2.0 | Studio Interface | Shipped; visual browser QA pending | Replace the initial utility-style interface with a cohesive workspace |
-| 0.4.1 | Foundation Completion | Shipped; live-browser verification in progress | Multi-document state/recovery, transactional history and invalidation-based rendering |
+| 0.4.1 | Foundation Completion | Shipped; live-browser smoke checks passed | Multi-document state/recovery, transactional history and invalidation-based rendering |
 | 0.4.0 | Pen and Editable Paths | Shipped; real-browser QA pending | Editable cubic Bézier paths, anchor/handle tools and vector path export |
 | 0.3.10 | Selection Shapes and Guide Snapping | Shipped; real-browser QA pending | Elliptical/freehand selections and layer alignment to guides |
 | 0.3.9 | Gradient Fills | Shipped; real-browser QA pending | Linear/radial gradients, editable colour stops and selection clipping |
@@ -80,7 +80,7 @@ This completes the remaining 0.3.x foundation baseline without removing the 0.4.
 | Zoom and pan | Delivered | Finite scrollable workspace; viewport boundaries can limit exact zoom anchoring |
 | Renderer separation and invalidation | Delivered baseline | UI, layout, raster composite and overlay functions are separate; no WebGL/worker/tiled engine |
 | Project validation | Delivered | Dimensions, layer settings, text and paths are checked before state replacement |
-| Browser verification | In progress | See validation note below |
+| Browser verification | Passed live smoke checks | Chromium: tabs, undo/redo, history panel, retained view and workspace recovery |
 
 History is command-shaped but intentionally retains shared before/after snapshots rather than operation-specific pixel patches. This provides transactional reversal and consistent support for every existing tool while keeping unchanged image strings shared. Large edited rasters can still reduce undo depth. Undo history and active selections are session-only and are not part of recovery/project files. Live tab switching preserves them.
 
@@ -88,7 +88,7 @@ New/Open changes: image opening creates a new tab; Add image layer and clipboard
 
 Workspace recovery stores names, dirty markers, layers, editable text, paths, guides, active document and view settings. It does not preserve undo stacks or selection masks. Browser storage failures remain visible; private browsing, quota limits and another browser tab writing the same recovery key can affect availability. Closing a document removes it from subsequent workspace recovery. Save projects before closing anything that needs a durable portable copy.
 
-Validation before publication: mocked application integration checks for two-document state isolation, per-document undo/redo, failed-history atomicity, multi-document recovery, dirty close guards, cached raster invalidation, existing pen workflows and syntax. Live-browser verification follows deployment; performance on very large files and broad cross-browser coverage are not yet certified.
+Validation before publication: mocked application integration checks for two-document state isolation, per-document undo/redo, failed-history atomicity, multi-document recovery, dirty close guards, cached raster invalidation, existing pen workflows and syntax. Live Chromium smoke checks on the deployed v0.4.1 passed: layer creation with undo/redo, named history entries, two documents with independent layer/history state, per-document zoom, and restoration of both tabs with dimensions, DPI and zoom after reload. Performance on very large files and broad cross-browser coverage are not yet certified.
 
 #### Next planned increments
 
