@@ -2,7 +2,7 @@
 
 A browser image studio for photo editing, graphics and everyday creative work. Picturesque is evolving through incremental releases toward advanced editing workflows, with an emphasis on approachable controls, reversible edits and local processing.
 
-Current release: 0.3.4, Clipboard, Magic Wand and Navigation, 15 October 2026.
+Current release: 0.3.5, Colour Selections and Leaner History, 16 October 2026.
 
 [Launch Picturesque](https://averydimbulb79.github.io/Picturesque/) · [Repository](https://github.com/Averydimbulb79/Picturesque)
 
@@ -16,6 +16,7 @@ The launch link requires GitHub Pages to be enabled. Source updates on the confi
 | 0.2.2 | Google Fonts | Shipped; live browser QA pending | Searchable font families, preview and font-aware raster text |
 | 0.2.1 | Professional Workspace | Shipped; visual browser QA pending | Compact editing layout, working application menus and fullscreen |
 | 0.2.0 | Studio Interface | Shipped; visual browser QA pending | Replace the initial utility-style interface with a cohesive workspace |
+| 0.3.5 | Colour Selections and Leaner History | Shipped; real-browser QA pending | Colour/alpha selection presets, combination modes, previews and bounded history |
 | 0.3.4 | Clipboard, Magic Wand and Navigation | Shipped; real-browser QA pending | Clipboard images, colour selections, anchored zoom and panning |
 | 0.3.3 | Workspace-edge Rulers | Shipped; visual browser QA pending | Fixed rulers around the working area with scroll-aware canvas coordinates |
 | 0.3.2 | Rulers, Guides and Selection Inversion | Shipped; visual browser QA pending | Pixel rulers, editable guides and invert selection |
@@ -33,6 +34,40 @@ The launch link requires GitHub Pages to be enabled. Source updates on the confi
 Planned versions are direction and scope, not delivery dates or claims of implemented capability. Large releases may be split into smaller updates. Photopea-level compatibility is a long-term goal; this application currently covers a much smaller feature set.
 
 ## Update history
+
+### 0.3.5: Colour Selections and Leaner History, 16 October 2026
+
+Rollback point: [backup/v0.3.4-before-colour-selection-history](https://github.com/Averydimbulb79/Picturesque/tree/backup/v0.3.4-before-colour-selection-history).
+
+| Area | Delivered | Behaviour |
+|---|---|---|
+| Select menu | Dedicated top-level menu | Select all, deselect, invert, white, black, custom colour/range and transparency |
+| Selection toolbar | Preset chooser and mode chooser | Available for rectangular selection and magic wand |
+| White/black | Image-wide colour matching | Adjustable tolerance includes near-white/near-black; fully transparent pixels are excluded |
+| Custom colour | Colour picker, six-digit HEX field and preview eyedropper | Clicking the preview samples the original image pixels |
+| Colour range | Tolerance from 0 to 255 | Maximum RGB channel difference from the selected colour, not a perceptual colour-distance model |
+| Transparency | Maximum alpha threshold from 0 to 254 | Zero selects fully transparent pixels; higher values include partly transparent pixels |
+| Source | Active layer or merged image | Active layer is sampled before its opacity/effects; matches existing wand sampling |
+| Preview | Cyan overlay and selected-pixel count | Shows the resulting combined selection before Apply; Cancel leaves the selection unchanged |
+| Combination | Replace, Add, Subtract and Intersect | Shared by presets, wand clicks and completed rectangular selections |
+| History storage | Cached raster encodings reused across unchanged states | Layer thumbnails, saved projects and recovery also reuse unchanged encoded pixels |
+| History limits | 25 entries per stack plus 64 MiB estimated combined history data | Old undo states are removed first; a state larger than the budget can leave no undo step |
+| Keyboard sliders | Repeated adjustments grouped within 450 ms | New pointer gestures create separate checkpoints |
+
+Selection modes combine the effective current area, including inverted selections. With no existing selection, Add behaves like Replace, while Subtract/Intersect produce an empty selection. Select all explicitly replaces the selection with the whole document. Selection changes remain temporary editor state rather than project content or history entries. Selection previews sample at document resolution, so very large images can pause while matching.
+
+History remains snapshot-based; this is not the full command-based history rewrite. Encoded raster strings are cached until the layer's pixels change, so structural edits no longer re-encode every unchanged layer. The 64 MiB budget estimates retained history strings/metadata, not total browser RAM, decoded canvases or temporary selection buffers. Undo depth can be lower for large documents. Saved project format remains version 1.
+
+Validation: colour/near-colour and alpha fixtures; Replace/Add/Subtract/Intersect; inverted rectangle conversion; bounds and HEX validation; encoded-image cache reuse/invalidation; history count and estimated memory pruning. Real-browser visual, pointer and performance QA remains pending.
+
+#### Next planned increment
+
+| Priority | Planned work | Status |
+|---|---|---|
+| Next | Document tabs with independent document state and history | Not implemented |
+| Following | Renderer/state separation and further memory/performance work | Not implemented |
+| Later | Editable text/objects and direct transform handles | Not implemented |
+
 
 ### 0.3.4: Clipboard, Magic Wand and Navigation, 15 October 2026
 
@@ -212,13 +247,13 @@ This release keeps the existing raster engine and version 1 project format. It d
 | Raster painting | Brush and eraser | Round strokes; no pressure response or brush presets |
 | Shapes | Filled rectangle and ellipse | Rasterised immediately; no editable vectors |
 | Text | Add text with size and colour | Google Fonts, letter spacing and leading; rasterised after insertion; no later text editing |
-| Selections | Rectangular, magic wand and inversion | No lasso, feathering or selection combining |
+| Selections | Rectangle, wand, colour/alpha presets, inversion and combination modes | No lasso, feathering or edge refinement |
 | Crop | Crop the whole document | Raster contents outside the crop are discarded in the current state |
 | Transforms | Move, 90-degree rotation, flip, percentage resize | No on-canvas handles, arbitrary rotation or perspective |
 | Layers | Visibility, order, names, duplication, opacity | No groups, locks, masks or clipping |
 | Blend modes | Normal, multiply, screen, overlay, darken, lighten | Limited subset of advanced editor modes |
 | Adjustments | Brightness, contrast and saturation stored per layer | Affect the whole layer; no independent adjustment layers |
-| History | Up to 25 ordinary edit snapshots | Full snapshots can consume significant memory |
+| History | Up to 25 entries per stack with shared encoded images | 64 MiB estimated history budget can reduce depth; decoded pixels use additional memory |
 | Export | PNG, JPEG and WebP | Visible layers flattened; JPEG transparency becomes white |
 | Projects | Version 1 .picturesque JSON files | Raster layers and settings only; no PSD compatibility |
 | Persistence | Manual project downloads and local autosave | Local latest-session autosave/recovery; portable backups still require project downloads |
