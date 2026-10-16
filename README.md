@@ -2,7 +2,67 @@
 
 A browser image studio for photo editing, graphics and everyday creative work. Picturesque is evolving through incremental releases toward advanced editing workflows, with an emphasis on approachable controls, reversible edits and local processing.
 
-Current release: 0.4.3, Export Settings, 16 October 2026.
+Current release: 0.4.7, 0.4 Completion, 16 October 2026.
+
+## v0.4.7: Remaining 0.4 Updates Combined
+
+This release ships the planned 0.4.4–0.4.7 work together. Version numbers 0.4.4–0.4.6 describe the bundled scope, not separate historical deployments.
+
+| Planned increment | Delivered capability | Where to use it |
+|---|---|---|
+| 0.4.4: Complete native saves | Project format v2 retains selection masks/inversion, document name, zoom, scroll offsets and ruler/guide visibility, alongside existing layer/text/path/DPI data | File → Save project; Ctrl/Cmd+S |
+| 0.4.5: Portable workspace | Download and restore up to eight documents in one .picturesque-workspace file, including active tab and individual document state | File → Save/Open workspace backup |
+| 0.4.6: Vector layers | Editable rectangle and ellipse layers, saved-path conversion, independent fill/stroke, live geometry and vector-preserving transforms | Shape tools; Pen → Vector layer; Properties → Vector layer |
+| 0.4.7: Compound paths | Multiple subpaths per vector layer, path selection/duplication/deletion, editable anchors and handles, even-odd holes and nonzero fill rules | Properties → Edit paths; Pen path source/list; Fill / stroke |
+
+### Project and workspace preservation
+
+| Information | Native project v2 | Workspace backup v2 |
+|---|---|---|
+| Layer pixels/order/visibility/positions/blending/adjustments | Yes | Every document |
+| Mixed-format editable text and font references | Yes | Every document |
+| Editable vector geometry, compound subpaths and styles | Yes | Every document |
+| Saved document paths and guides | Yes | Every document |
+| Active selection, including bitmap masks and inversion | Yes | Every document |
+| Canvas size, DPI and document name | Yes | Every document |
+| Zoom, pan, ruler/guide visibility | Yes | Every document |
+| Active layer | Yes | Every document |
+| Active document tab and document dirty markers | One document only | Yes |
+| Undo/redo history | Session only | Session only |
+| Font binaries | Not embedded | Not embedded |
+
+Selection masks use packed bits to keep files smaller. Opening legacy format v1 remains supported; fields absent in v1 use defaults, and the next save writes v2. Unknown project/workspace versions are rejected. Old application releases cannot open v2 projects. Save an original v1 copy if you need to use an earlier app version.
+
+Both individual project files and whole workspace backups have a 150,000,000-byte limit. Save separate projects if a combined workspace exceeds that limit. Workspace import decodes every document before replacing the current workspace, and requests confirmation if current documents have unsaved changes. Failed parsing/validation/decoding leaves the current workspace intact. Workspace downloads do not clear individual project dirty markers. Browser recovery uses the same format support and accepts older single-document and workspace recovery records.
+
+Zoom and scroll restoration are bounded by available viewport space, so another screen size can clamp scroll offsets. Undo history, temporary gestures and pen editing focus are intentionally not portable. Font names and mixed formatting remain editable; their raster appearance is cached, and editing text may require downloading Google Fonts again.
+
+### Vector workflow
+
+1. Draw with Rectangle or Ellipse to create a new vector layer. Shapes remain independent of any pixel selection.
+2. For an existing saved pen path, choose Document paths, select the path, then choose Vector layer. The original saved path remains independent.
+3. Select the vector layer and choose Properties → Fill / stroke for colours, fill/stroke toggles, stroke width and compound fill rule.
+4. Choose Edit paths. The pen source switches to Selected vector layer. Direct selection edits anchors and handles; the path dropdown selects subpaths.
+5. New path draws another subpath in the same vector layer. Enclosed overlaps form holes with even-odd fill. Duplicate path adds an offset independent subpath; Delete path removes the selected one.
+6. Move, scale, rotate or flip the layer while retaining geometry. Duplicate layer deep-copies its vector data. Rasterise vector explicitly before using brush, eraser, bucket, pixel deletion or pixel gradients on that layer.
+
+Vectors retain geometry plus a document-resolution raster cache for the current canvas renderer. This is not a GPU/vector-only display engine. Compound fill rules are supported; destructive Boolean union/intersection operations, vector masks, gradient vector styles and a full-document SVG export are not part of this release. SVG in the pen toolbar still exports only the selected subpath. Cropping retains vector geometry outside the visible document, while the document boundary clips the composite. Shapes are new layers, unlike the earlier raster shape tools that painted on the active layer.
+
+### Validation and next releases
+
+Targeted full-application mocked-runtime checks passed for v2 save/reopen of selections/name/view, compound fill rendering calls, vector deep-copy isolation, subpath duplicate/delete, vector transforms with undo/redo, rasterisation with undo, two-document workspace roundtrip, atomic invalid-workspace rejection, legacy compatibility and malformed data rejection. Existing export checks also passed. Live browser smoke verification is in progress; large-file performance and broad browser coverage are not certified.
+
+| Next series | Planned work |
+|---|---|
+| 0.5.x | Adjustment layers, raster masks and clipping masks |
+| 0.6.x | Vector masks and combined masks |
+| 0.7.x | Smart Objects, editable contents, Smart Filters and filter masks |
+| 0.8.x | Refine Edge, edge detection and staged hair refinement |
+| 0.9.x | Brush engine, dynamics, custom tips and integration polish |
+
+Every new editing feature must include native save/reopen support in the same release. PSD compatibility remains a future format workstream.
+
+Earlier sections below describe behaviour at the time of each release; this current section supersedes their project-preservation limits and upcoming 0.4 targets.
 
 ## v0.4.3: Export Settings
 
@@ -81,6 +141,7 @@ The launch link requires GitHub Pages to be enabled. Source updates on the confi
 | 0.2.2 | Google Fonts | Shipped; live browser QA pending | Searchable font families, preview and font-aware raster text |
 | 0.2.1 | Professional Workspace | Shipped; visual browser QA pending | Compact editing layout, working application menus and fullscreen |
 | 0.2.0 | Studio Interface | Shipped; visual browser QA pending | Replace the initial utility-style interface with a cohesive workspace |
+| 0.4.7 | 0.4 Completion | Shipped; live smoke checks in progress | Native v2, portable workspace, vector layers and compound subpaths |
 | 0.4.3 | Export Settings | Shipped | Format dropdown, conditional settings, export dimensions and encoder checks |
 | 0.4.2 | Save Reliability | Shipped | Save preflight, consistent save/open limits, Ctrl/Cmd+S and explicit download feedback |
 | 0.4.1 | Foundation Completion | Shipped; live-browser smoke checks passed | Multi-document state/recovery, transactional history and invalidation-based rendering |
