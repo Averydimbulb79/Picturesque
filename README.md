@@ -2,7 +2,28 @@
 
 A browser image studio for photo editing, graphics and everyday creative work. Picturesque is evolving through incremental releases toward advanced editing workflows, with an emphasis on approachable controls, reversible edits and local processing.
 
-Current release: 0.4.2, Save Reliability, 16 October 2026.
+Current release: 0.4.3, Export Settings, 16 October 2026.
+
+## v0.4.3: Export Settings
+
+Export image now opens a wider, two-column dialog with an explicit format dropdown. Format-specific settings appear automatically.
+
+| Setting | PNG | JPEG | WebP |
+|---|---|---|---|
+| Encoding | Lossless | Lossy | Lossy |
+| Quality | Not applicable | 1–100%, default 94% | 1–100%, default 94% |
+| Preserve transparency | Optional, on by default | Unsupported | Optional, on by default |
+| Background colour | When transparency is off | Always | When transparency is off |
+| Embedded resolution | 1–2400 DPI, defaults to document DPI | Not written | Not written |
+| Output width/height | Supported | Supported | Supported |
+| Aspect-ratio lock | On by default | On by default | On by default |
+| Smooth resizing | Optional, on by default | Optional, on by default | Optional, on by default |
+
+Output dimensions use the existing canvas limits: whole pixels, up to 8192 per side and 24 million pixels total. DPI writes PNG physical-resolution metadata; changing it alone does not resample pixels. Resize fields control pixel dimensions. Turn off smoothing for hard pixel-art edges. JPEG and WebP use browser encoders, so quality and file size can differ between browsers. Unsupported encoders are detected by the returned MIME type rather than silently downloading PNG bytes with another extension.
+
+The document remains unchanged. Export does not clear the project dirty marker. The dialog reports download initiation and encoded size, stays open for another export, and shows failures inline. Save a .picturesque project separately to retain editable layers. SVG remains a separate selected-path export, not a whole-document image option.
+
+Validation: JavaScript syntax, existing save-reliability checks and targeted mocked-renderer tests passed for PNG transparency/DPI, JPEG quality/background, opaque WebP, unsupported codec fallback and invalid dimensions/quality/format/background. Live cross-browser encoder and visual-dialog coverage remains to be completed.
 
 ## v0.4.2: Save Reliability
 
@@ -35,9 +56,9 @@ Use File → Save project, check the downloaded file, and reopen it through File
 
 | Order | Target | Scope |
 |---|---|---|
-| 1 | 0.4.3 | Complete native projects: selections, document name, viewport and explicit format migrations |
-| 2 | 0.4.4 | Portable multi-document workspace backup and restore |
-| 3 | 0.4.5 | Export quality, dimensions, background and resolution controls |
+| 1 | 0.4.4 | Complete native projects: selections, document name, viewport and explicit format migrations |
+| 2 | 0.4.5 | Portable multi-document workspace backup and restore |
+| 3 | 0.4.3 delivered | Export quality, dimensions, background and PNG resolution controls |
 | 4 | 0.4.6–0.4.7 | Editable vector layers and compound paths |
 | 5 | 0.5.x | Adjustment layers, raster masks and clipping masks |
 | 6 | 0.6.x | Vector masks and combined mask controls |
@@ -60,6 +81,7 @@ The launch link requires GitHub Pages to be enabled. Source updates on the confi
 | 0.2.2 | Google Fonts | Shipped; live browser QA pending | Searchable font families, preview and font-aware raster text |
 | 0.2.1 | Professional Workspace | Shipped; visual browser QA pending | Compact editing layout, working application menus and fullscreen |
 | 0.2.0 | Studio Interface | Shipped; visual browser QA pending | Replace the initial utility-style interface with a cohesive workspace |
+| 0.4.3 | Export Settings | Shipped | Format dropdown, conditional settings, export dimensions and encoder checks |
 | 0.4.2 | Save Reliability | Shipped | Save preflight, consistent save/open limits, Ctrl/Cmd+S and explicit download feedback |
 | 0.4.1 | Foundation Completion | Shipped; live-browser smoke checks passed | Multi-document state/recovery, transactional history and invalidation-based rendering |
 | 0.4.0 | Pen and Editable Paths | Shipped; real-browser QA pending | Editable cubic Bézier paths, anchor/handle tools and vector path export |
