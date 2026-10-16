@@ -2,7 +2,51 @@
 
 A browser image studio for photo editing, graphics and everyday creative work. Picturesque is evolving through incremental releases toward advanced editing workflows, with an emphasis on approachable controls, reversible edits and local processing.
 
-Current release: 0.4.1, Foundation Completion, 16 October 2026.
+Current release: 0.4.2, Save Reliability, 16 October 2026.
+
+## v0.4.2: Save Reliability
+
+Saving and reopening work takes priority over new editing features.
+
+| Change | Behaviour |
+|---|---|
+| Save preflight | Validate the native project, serialize it, then parse and decode every embedded layer before initiating the download. Failure leaves the document and its dirty marker intact. |
+| Shared file limit | Both saving and opening enforce 150,000,000 bytes. Oversized saves are blocked with an actionable message; no knowingly unopenable file is downloaded. |
+| Layer compatibility | Removed the loader-only 50-layer cap. Files remain subject to the byte limit, canvas limits and available browser memory. |
+| Save shortcut | Ctrl/Cmd+S downloads a fresh native project copy, including when a normal control has focus. Active dialogs and gestures must be completed first. |
+| Visible status | Separate project download/open feedback from browser-local recovery status. Download initiation is explicitly not proof that the user retained the file. |
+| Compatibility | Existing version 1 .picturesque and JSON projects continue to open. No format migration is required for this release. |
+
+Validation: JavaScript syntax and targeted mocked-runtime checks passed for a 51-layer save/decode roundtrip, failed embedded-image decoding, file-size rejection, invalid metadata, dialog guards and preservation of the dirty marker on failure. These checks do not certify large-file performance or every browser download flow.
+
+### What each format keeps
+
+| Format | Retained | Excluded |
+|---|---|---|
+| .picturesque | Lossless embedded layer pixels, layer metadata and adjustments, editable mixed-format text, pen paths, guides, dimensions and DPI | Undo history, active selections, viewport, document name and embedded font files |
+| PNG | Flattened appearance, transparency and DPI metadata | Editable document structure |
+| JPEG | Flattened appearance with white transparency background | Editable structure, transparency and written DPI metadata |
+| WebP | Flattened appearance and transparency | Editable structure and written DPI metadata |
+| SVG path | Selected pen path geometry | Full document composition |
+
+Use File → Save project, check the downloaded file, and reopen it through File → Open project. Save every document separately. Ctrl/Cmd+S downloads another copy; it does not overwrite a previously downloaded file. Local recovery is a convenience, not a portable backup. Font names and formatting are retained with cached raster appearance; editing text may require fetching its Google Fonts again.
+
+### Revised upcoming roadmap
+
+| Order | Target | Scope |
+|---|---|---|
+| 1 | 0.4.3 | Complete native projects: selections, document name, viewport and explicit format migrations |
+| 2 | 0.4.4 | Portable multi-document workspace backup and restore |
+| 3 | 0.4.5 | Export quality, dimensions, background and resolution controls |
+| 4 | 0.4.6–0.4.7 | Editable vector layers and compound paths |
+| 5 | 0.5.x | Adjustment layers, raster masks and clipping masks |
+| 6 | 0.6.x | Vector masks and combined mask controls |
+| 7 | 0.7.x | Smart Objects, editable contents, Smart Filters and filter masks |
+| 8 | 0.8.x | Refine Edge, edge detection and staged hair refinement |
+| 9 | 0.9.x | Custom brush engine, dynamics, custom tips and integration polish |
+
+New editing features must include native save/reopen support in their release. Undo history remains session-only unless a later release explicitly adds portable history. PSD compatibility remains a separate future workstream.
+
 
 [Launch Picturesque](https://averydimbulb79.github.io/Picturesque/) · [Repository](https://github.com/Averydimbulb79/Picturesque)
 
@@ -16,6 +60,7 @@ The launch link requires GitHub Pages to be enabled. Source updates on the confi
 | 0.2.2 | Google Fonts | Shipped; live browser QA pending | Searchable font families, preview and font-aware raster text |
 | 0.2.1 | Professional Workspace | Shipped; visual browser QA pending | Compact editing layout, working application menus and fullscreen |
 | 0.2.0 | Studio Interface | Shipped; visual browser QA pending | Replace the initial utility-style interface with a cohesive workspace |
+| 0.4.2 | Save Reliability | Shipped | Save preflight, consistent save/open limits, Ctrl/Cmd+S and explicit download feedback |
 | 0.4.1 | Foundation Completion | Shipped; live-browser smoke checks passed | Multi-document state/recovery, transactional history and invalidation-based rendering |
 | 0.4.0 | Pen and Editable Paths | Shipped; real-browser QA pending | Editable cubic Bézier paths, anchor/handle tools and vector path export |
 | 0.3.10 | Selection Shapes and Guide Snapping | Shipped; real-browser QA pending | Elliptical/freehand selections and layer alignment to guides |
