@@ -50,7 +50,7 @@ Vectors retain geometry plus a document-resolution raster cache for the current 
 
 ### Validation and next releases
 
-Targeted full-application mocked-runtime checks passed for v2 save/reopen of selections/name/view, compound fill rendering calls, vector deep-copy isolation, subpath duplicate/delete, vector transforms with undo/redo, rasterisation with undo, two-document workspace roundtrip, atomic invalid-workspace rejection, legacy compatibility and malformed data rejection. Existing export checks also passed. Live browser smoke verification is in progress; large-file performance and broad browser coverage are not certified.
+Targeted full-application mocked-runtime checks passed for v2 save/reopen of selections/name/view, compound fill rendering calls, vector deep-copy isolation, subpath duplicate/delete, vector transforms with undo/redo, rasterisation with undo, two-document workspace roundtrip, atomic invalid-workspace rejection, legacy compatibility and malformed data rejection. Existing export checks also passed. Live Chromium checks passed for drawing an editable rectangle, duplicating compound subpaths, applying stroke settings, downloading and reopening a v2 project with its editable geometry/name/zoom, and downloading a two-document workspace. Inspection of the actual downloaded files confirmed packed selection data, both compound paths, styles, document name, zoom and both workspace documents. Full workspace restore was covered by the mocked-runtime integration test; large-file performance and broad browser coverage are not certified.
 
 | Next series | Planned work |
 |---|---|
@@ -141,7 +141,7 @@ The launch link requires GitHub Pages to be enabled. Source updates on the confi
 | 0.2.2 | Google Fonts | Shipped; live browser QA pending | Searchable font families, preview and font-aware raster text |
 | 0.2.1 | Professional Workspace | Shipped; visual browser QA pending | Compact editing layout, working application menus and fullscreen |
 | 0.2.0 | Studio Interface | Shipped; visual browser QA pending | Replace the initial utility-style interface with a cohesive workspace |
-| 0.4.7 | 0.4 Completion | Shipped; live smoke checks in progress | Native v2, portable workspace, vector layers and compound subpaths |
+| 0.4.7 | 0.4 Completion | Shipped; live smoke checks passed | Native v2, portable workspace, vector layers and compound subpaths |
 | 0.4.3 | Export Settings | Shipped | Format dropdown, conditional settings, export dimensions and encoder checks |
 | 0.4.2 | Save Reliability | Shipped | Save preflight, consistent save/open limits, Ctrl/Cmd+S and explicit download feedback |
 | 0.4.1 | Foundation Completion | Shipped; live-browser smoke checks passed | Multi-document state/recovery, transactional history and invalidation-based rendering |
