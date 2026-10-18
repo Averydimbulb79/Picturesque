@@ -1,5 +1,7 @@
 # Picturesque
 
+[Open Picturesque in your browser](https://averydimbulb79.github.io/Picturesque/)
+
 A browser image studio for photo editing, graphics and everyday creative work. Picturesque is evolving through incremental releases toward advanced editing workflows, with an emphasis on approachable controls, reversible edits and local processing.
 
 Current release: 0.4.7, 0.4 Completion, 16 October 2026.
@@ -128,8 +130,6 @@ Use File → Save project, check the downloaded file, and reopen it through File
 
 New editing features must include native save/reopen support in their release. Undo history remains session-only unless a later release explicitly adds portable history. PSD compatibility remains a separate future workstream.
 
-
-[Launch Picturesque](https://averydimbulb79.github.io/Picturesque/) · [Repository](https://github.com/Averydimbulb79/Picturesque)
 
 The launch link requires GitHub Pages to be enabled. Source updates on the configured publishing branch will be deployed by GitHub Pages.
 
