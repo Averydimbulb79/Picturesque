@@ -1,7 +1,7 @@
 "use strict";
 // state.js — shared editor source; load order is declared in index.html.
 "use strict";
-const VERSION = "0.4.9";
+const VERSION = "0.5.0-alpha.1";
 const PROJECT_MAX_BYTES = 150000000;
 const $ = (id) => document.getElementById(id),
   view = $("canvas"),
