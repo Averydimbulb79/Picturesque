@@ -1,6 +1,6 @@
 {
   "name": "picturesque",
-  "version": "0.4.9",
+  "version": "0.5.0-alpha.1",
   "description": "Picturesque browser and Windows image editor",
   "author": "Mike",
   "private": true,
