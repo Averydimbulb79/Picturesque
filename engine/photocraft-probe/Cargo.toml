@@ -1,0 +1,14 @@
+[package]
+name = "picturesque-engine-probe"
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.95"
+publish = false
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+photocraft-doc = { git = "https://github.com/storytold/photocraft", rev = "68348dcafcf42599846afaab42a8a724b630eed5" }
+photocraft-compose = { git = "https://github.com/storytold/photocraft", rev = "68348dcafcf42599846afaab42a8a724b630eed5" }
+wasm-bindgen = "=0.2.105"
