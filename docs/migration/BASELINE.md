@@ -59,4 +59,4 @@ Use synthetic artwork rather than personal images. Preserve editable semantics: 
 | Browser acceptance | Full checklist, visual comparison, large-document profiling, recovery and load failures | Pending |
 | Windows | Package accepted shared web editor and repeat native file/recovery smoke tests | Deferred until web acceptance |
 
-Application version remains 0.4.9 because this increment adds migration safeguards and documentation without changing runtime behaviour.
+Rewrite increment 0.5.0-alpha.1 adds src/engine.js before rendering.js and updates the version label. The interface tests normalise these two approved differences before comparing the original HTML hash. Styles and interface.js remain byte-identical. Rendering now delegates to a stateless Canvas2D backend; editable state/history are not migrated.
