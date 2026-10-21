@@ -58,7 +58,7 @@ Both editions use the same editor, tools and project format. The browser version
 | Browser | Project/workspace downloads and browser file picker | Browser-local IndexedDB |
 | Windows preview | Native Open, Save and Save As; Save overwrites its chosen project file | Recovery file in the application's local data folder |
 
-Windows x64 installers are built by the [Windows preview workflow](https://github.com/Averydimbulb79/Picturesque/actions/workflows/windows.yml). Open the latest successful run and download its Picturesque-Windows-preview artifact; extract the ZIP and run the Setup.exe. An installer is available only after that build succeeds. Preview installers are unsigned and may prompt Windows security checks. Manual update installation is required; automatic updates and ARM64 builds are not included yet.
+The [v0.4.9 Windows build](https://github.com/Averydimbulb79/Picturesque/actions/runs/39588296565) completed successfully, including its packaged-app startup/native-save/recovery check. Download the Picturesque-Windows-preview artifact from that run, extract the ZIP and run Setup.exe. Future installers are built by the [Windows preview workflow](https://github.com/Averydimbulb79/Picturesque/actions/workflows/windows.yml). Preview installers are unsigned and may prompt Windows security checks. Manual update installation is required; automatic updates and ARM64 builds are not included yet.
 
 Windows associates .picturesque and .picturesque-workspace files with Picturesque. Double-click opens the file in the editor; another launch brings the existing app forward. Projects recovered after a crash require a fresh Save As destination. Google Fonts still require an internet connection when loading new fonts.
 
@@ -103,7 +103,7 @@ These are planned capabilities, not delivery dates. New editing features must in
 | Browsers | Modern browser required; desktop is the primary workflow |
 | Privacy | Image processing stays local; the font picker contacts Google |
 
-Integration checks and selected live Chromium save/reopen checks passed. Large-file performance and broad cross-browser behaviour are not certified.
+All 10 regression tests passed locally and on Windows. The packaged Windows app passed startup, renderer isolation, native Save/overwrite/Save As and disk-recovery checks. Live Chromium startup, layer undo/redo, vector creation, project download and JPEG export checks passed. Manual Windows installer/association testing, large-file performance and broad browser coverage remain pending.
 
 <details>
 <summary>Keyboard shortcuts</summary>

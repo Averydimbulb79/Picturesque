@@ -35,6 +35,8 @@ Includes the previously proposed 0.4.8 refactor and 0.4.9 desktop preview in one
 - Added a Windows x64 NSIS installer workflow and pinned dependency lockfile. Preview builds are unsigned; Windows runtime verification and installer completion are reported separately from source checks.
 - Added regression tests for source loading, document/workspace roundtrips, vector history, native Save cancellation/overwrite/Save As, authorized file handles, exports, recovery and failed atomic writes.
 
+Validation: all 10 Node regression tests passed locally and on the Windows runner. [Windows build 39588296565](https://github.com/Averydimbulb79/Picturesque/actions/runs/39588296565) produced the x64 installer and launched the packaged app successfully. The packaged check verified renderer isolation, preload access, native first Save, overwrite through the existing file binding, Save As to a second destination, actual saved vector data and disk recovery. Live browser smoke checks passed startup, layer undo/redo, vector creation, project download and JPEG export. Manual installer execution/file-association behaviour, large-file performance and broad browser testing remain unverified.
+
 Boundaries: source files retain shared lexical editor state rather than independent ES modules. No renderer performance improvement is claimed. Native recovery does not retain original file bindings or undo history. No automatic updater, signing certificate or ARM64 installer is included. New Google Fonts need network access. The desktop host permits only local app resources and Google Fonts network requests, while supported font catalogue links open externally.
 
 <details>
