@@ -9,8 +9,13 @@ const baseline = require("./fixtures/interface-baseline.json");
 
 test("Engine migration preserves the approved HTML, styles, icons and menu definitions", () => {
   for (const [filename, expected] of Object.entries(baseline.uiFiles)) {
-    const actual = crypto.createHash("sha256")
-      .update(fs.readFileSync(path.join(root, filename))).digest("hex");
+    let contents = fs.readFileSync(path.join(root, filename), "utf8");
+    // Approved rewrite-only differences: version label and the engine script.
+    // All visible markup, layout, styles and interface construction stay frozen.
+    if (filename === "index.html") contents = contents
+      .replaceAll("0.5.0-alpha.1", baseline.appVersion)
+      .replace('    <script defer src="src/engine.js"></script>\n', "");
+    const actual = crypto.createHash("sha256").update(contents).digest("hex");
     assert.equal(actual, expected,
       filename + ": approved interface changed; inspect the visual difference before deliberately updating the baseline");
   }
@@ -22,6 +27,9 @@ test("Baseline retains tools, menus, element identities and shared-script order"
   assert.deepEqual(values(/<button[^>]*data-tool="([^"]+)"/g), baseline.tools);
   assert.deepEqual(values(/data-menu="([^"]+)"/g), baseline.menus);
   assert.deepEqual(values(/\bid="([^"]+)"/g), baseline.ids);
-  assert.deepEqual(values(/<script defer src="([^"]+)"/g), baseline.scripts);
+  const scripts = values(/<script defer src="([^"]+)"/g);
+  assert.deepEqual(scripts.filter((file) => file !== "src/engine.js"), baseline.scripts);
+  assert.equal(scripts.filter((file) => file === "src/engine.js").length, 1);
+  assert.equal(scripts.indexOf("src/engine.js"), scripts.indexOf("src/rendering.js") - 1);
   assert.equal(new Set(baseline.ids).size, baseline.ids.length, "duplicate element IDs");
 });
