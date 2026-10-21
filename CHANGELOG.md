@@ -4,6 +4,21 @@
 
 The README describes the current release. Archived notes below describe behaviour at the time they were written; older limits, pending features and roadmap numbering may have been superseded.
 
+#### Migration foundation, 22 October 2026
+
+Application remains v0.4.9; no runtime or project-format changes.
+
+| Change | Result |
+|---|---|
+| Backup | Complete pre-migration repository preserved on backup/pre-engine-baseline-20261022 |
+| Interface baseline | Exact HTML, CSS and interface-code hashes; ordered tool/menu/element/script inventory |
+| Regression gate | Two additional checks detect accidental interface and control changes |
+| Feature parity | Detailed acceptance checklist for current tools, dialogs, projects, navigation and platform behaviour |
+| Engine review | PhotoCraft revision pinned; lower-level engine/compositor inspected; custom WASM bridge required |
+| Delivery policy | Web-first on main; Windows packaging after browser acceptance |
+
+Source checks do not substitute for browser screenshots, pixel comparisons or functional engine tests. PhotoCraft is not yet built or integrated. See [migration baseline](docs/migration/BASELINE.md) and [engine assessment](docs/migration/ENGINE.md).
+
 | Version | Main change |
 |---|---|
 | 0.4.9 | Shared feature files and Windows preview: native file access, recovery, installer build and regression tests |
