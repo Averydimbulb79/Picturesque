@@ -4,7 +4,7 @@
 
 A browser-based image editor for photos, graphics and everyday creative work. Photoshop-inspired workspace, local image processing and editable project files.
 
-Current version: 0.4.7 · Updated 16 October 2026
+Current version: 0.4.9 · Updated 21 October 2026
 
 #### Start here
 
@@ -43,24 +43,40 @@ For vector editing, select a vector layer → Properties → Edit paths. Use Fil
 | WebP | Compressed flattened image | Quality and optional transparency |
 | SVG path | Selected pen subpath | That path only; not the full document |
 
-File → Save project or Ctrl/Cmd+S downloads a fresh project copy. File → Save workspace backup downloads all open documents together. Reopen through the matching File menu action.
+In the browser, File → Save project or Ctrl/Cmd+S downloads a fresh project copy. On Windows, Save writes to its chosen file; Ctrl+Shift+S chooses a new destination. File → Save workspace backup downloads all open documents together. Reopen through the matching File menu action.
 
 Export image offers a format dropdown, format-specific controls, output dimensions, aspect-ratio lock and smooth resizing. Export leaves the editable document unchanged.
 
 Undo history and font files are not embedded in project or workspace files. Google Fonts may need to load again when editing text. Local recovery is browser-specific; keep downloaded backups. Current saves use format v2 and can open older v1 files, but older app releases cannot open v2 files.
 
+#### Browser and Windows
+
+Both editions use the same editor, tools and project format. The browser version remains available through the launch link above.
+
+| Edition | Open and save | Recovery |
+|---|---|---|
+| Browser | Project/workspace downloads and browser file picker | Browser-local IndexedDB |
+| Windows preview | Native Open, Save and Save As; Save overwrites its chosen project file | Recovery file in the application's local data folder |
+
+Windows x64 installers are built by the [Windows preview workflow](https://github.com/Averydimbulb79/Picturesque/actions/workflows/windows.yml). Open the latest successful run and download its Picturesque-Windows-preview artifact; extract the ZIP and run the Setup.exe. An installer is available only after that build succeeds. Preview installers are unsigned and may prompt Windows security checks. Manual update installation is required; automatic updates and ARM64 builds are not included yet.
+
+Windows associates .picturesque and .picturesque-workspace files with Picturesque. Double-click opens the file in the editor; another launch brings the existing app forward. Projects recovered after a crash require a fresh Save As destination. Google Fonts still require an internet connection when loading new fonts.
+
 #### Latest update
 
-Version 0.4.7 combines the remaining 0.4 work:
+Version 0.4.9 combines the shared-source refactor and Windows preview foundation.
 
 | Update | Result |
 |---|---|
-| Fuller project saves | Retains selections, document names, zoom, pan and ruler/guide visibility |
-| Workspace backups | Downloads and restores all open documents |
-| Vector layers | Editable geometry, fill/stroke and vector-preserving transforms |
-| Compound paths | Multiple subpaths, holes, anchor editing and independent duplication |
+| Source organisation | Separate HTML, stylesheet and feature files for state, rendering, history, files, tools, selections, vectors, typography and UI |
+| Shared editor | Browser and desktop load the same ordered source files; no duplicate feature implementation |
+| Windows integration | Native file dialogs, Save/Save As, export destinations, file associations and unsaved-close confirmation |
+| Recovery and saves | Desktop-local recovery, validated handles and temporary-file writes before replacing projects |
+| Build and checks | Windows installer workflow, pinned development dependencies and committed regression tests |
 
-Detailed changes and validation notes are in the [changelog](CHANGELOG.md).
+This refactor preserves the current global editor bindings across ordered scripts. They are feature files rather than isolated ES modules; further state isolation can happen incrementally. Splitting files improves maintenance and testing, with no promised rendering speed increase. Project format remains v2, with v1 import support.
+
+Detailed changes, platform boundaries and checks are in the [changelog](CHANGELOG.md) and [desktop development guide](desktop/README.md).
 
 #### Roadmap
 
@@ -94,7 +110,8 @@ Integration checks and selected live Chromium save/reopen checks passed. Large-f
 
 | Shortcut | Action |
 |---|---|
-| Ctrl/Cmd+S | Download project |
+| Ctrl/Cmd+S | Save project (download in browser) |
+| Ctrl/Cmd+Shift+S | Save project as (Windows) |
 | Ctrl/Cmd+K | Find a command |
 | Ctrl/Cmd+Z / Shift+Z | Undo / redo |
 | Ctrl/Cmd+V | Paste image |
@@ -114,8 +131,11 @@ Tool shortcuts pause while typing or using a dialog.
 <details>
 <summary>Run locally or publish</summary>
 
-No installation or build step is required. Open index.html in a modern browser, or serve it from a static host.
+Browser: no installation or build step is required. Open index.html in a modern browser, or serve the entire repository from a static host. Keep src/ and styles/ alongside index.html.
+
+Windows development: install Node.js, run npm ci, then npm start. Run npm test for regression checks and npm run dist:win on Windows to create the installer.
 
 For GitHub Pages: Settings → Pages → Deploy from a branch → main → / (root). Allow deployment to finish, then hard-refresh if an older interface appears.
 
 </details>
+

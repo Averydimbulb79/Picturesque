@@ -6,6 +6,7 @@ The README describes the current release. Archived notes below describe behaviou
 
 | Version | Main change |
 |---|---|
+| 0.4.9 | Shared feature files and Windows preview: native file access, recovery, installer build and regression tests |
 | 0.4.7 | Native project v2, portable workspace backups, editable vector layers and compound paths |
 | 0.4.3 | Format dropdown and extended image export settings |
 | 0.4.2 | Save validation, aligned file limits and save shortcut |
@@ -22,6 +23,19 @@ The README describes the current release. Archived notes below describe behaviou
 | 0.1.0 | Initial editor |
 
 Documentation update, 18 October 2026: condensed the README, reduced heading sizes, consolidated the active roadmap and moved detailed historical material here. Application version remains 0.4.7.
+
+#### 0.4.9 · Shared browser/Windows foundation · 21 October 2026
+
+Includes the previously proposed 0.4.8 refactor and 0.4.9 desktop preview in one release. Existing editor behaviour and project format v2 remain shared.
+
+- Extracted inline CSS and JavaScript into readable feature files with explicit deterministic load order.
+- Added an Electron host with a sandboxed renderer, context isolation, restricted file bridge and no renderer Node access.
+- Added native Open, Save, Save As, export dialogs and Windows file associations. Cancelled or failed saves retain the dirty marker.
+- Added temporary-file writes before replacing a project, desktop app-data recovery and unsaved-close confirmation.
+- Added a Windows x64 NSIS installer workflow and pinned dependency lockfile. Preview builds are unsigned; Windows runtime verification and installer completion are reported separately from source checks.
+- Added regression tests for source loading, document/workspace roundtrips, vector history, native Save cancellation/overwrite/Save As, authorized file handles, exports, recovery and failed atomic writes.
+
+Boundaries: source files retain shared lexical editor state rather than independent ES modules. No renderer performance improvement is claimed. Native recovery does not retain original file bindings or undo history. No automatic updater, signing certificate or ARM64 installer is included. New Google Fonts need network access. The desktop host permits only local app resources and Google Fonts network requests, while supported font catalogue links open externally.
 
 <details>
 <summary>Detailed historical release notes and earlier plans</summary>
@@ -829,3 +843,4 @@ Future documentation entries should describe the final shipped implementation, i
 
 
 </details>
+
