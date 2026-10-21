@@ -7,14 +7,14 @@
       http-equiv="Content-Security-Policy"
       content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob:; connect-src 'self' https://fonts.google.com https://fonts.googleapis.com https://fonts.gstatic.com; object-src 'none'; base-uri 'none'; form-action 'none'"
     />
-    <title>Picturesque 0.4.9 | Image studio</title>
+    <title>Picturesque 0.5.0-alpha.1 | Image studio</title>
     <link rel="stylesheet" href="styles/editor.css" />
   </head>
   <body>
     <header>
       <h1>
         <span class="brand-icon">P</span>Picturesque<span>.</span
-        ><small class="version">v0.4.9</small>
+        ><small class="version">v0.5.0-alpha.1</small>
       </h1>
       <button id="new">New canvas</button><button id="open">Open image</button
       ><button id="import">Add image layer</button
@@ -452,6 +452,7 @@
     </dialog>
     <script defer src="src/platform.js"></script>
     <script defer src="src/state.js"></script>
+    <script defer src="src/engine.js"></script>
     <script defer src="src/rendering.js"></script>
     <script defer src="src/history.js"></script>
     <script defer src="src/project-format.js"></script>
