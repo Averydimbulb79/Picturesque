@@ -10,7 +10,7 @@ Web-first development on `main`. The previous application is preserved in [legac
 
 #### Engine migration preparation
 
-Current application: v0.4.9. Migration foundation added 22 October 2026. The current interface and every existing function are the minimum baseline for the replacement engine.
+Current application: v0.5.0-alpha.1, updated 22 October 2026. The current interface and every existing function are the minimum baseline for the replacement engine.
 
 | Added | Purpose |
 |---|---|
@@ -18,7 +18,11 @@ Current application: v0.4.9. Migration foundation added 22 October 2026. The cur
 | [Engine assessment](docs/migration/ENGINE.md) | Pinned PhotoCraft source review, integration boundary and feasibility gates |
 | Regression checks | Locks approved interface files and control identities; runs with npm test |
 
-The existing editor remains active. PhotoCraft is being evaluated; its engine has not been integrated or benchmarked. Windows packaging follows browser acceptance.
+The first rewrite increment routes canvas display, merged previews and exports through a DOM-independent renderer. Existing tools, interface and project v2 remain in place. PhotoCraft has an isolated Rust/WASM compositor probe and GitHub build workflow; it is not the production renderer.
+
+Run `npm test` for 15 regression checks. The [engine probe workflow](https://github.com/Averydimbulb79/Picturesque/actions/workflows/engine-probe.yml) builds a downloadable browser harness. Extract its artifact, serve the folder over HTTP and open index.html. A passing build alone does not establish browser or feature parity.
+
+Windows packaging is manual while browser development proceeds; it follows web acceptance.
 
 #### Main capabilities
 
