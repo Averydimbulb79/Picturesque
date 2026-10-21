@@ -1,3 +1,5 @@
 node_modules/
 dist/
 *.log
+engine/photocraft-probe/target/
+engine/photocraft-probe/harness/pkg/
