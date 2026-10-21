@@ -23,22 +23,12 @@ function layer(name, c = surface()) {
 function current() {
   return layers[active];
 }
+const documentRenderer = PicturesqueEngine.createCanvasRenderer();
 function filter(l) {
-  return `brightness(${l.brightness}%) contrast(${l.contrast}%) saturate(${l.saturation}%)`;
+  return PicturesqueEngine.layerFilter(l);
 }
 function composite(target) {
-  const g = target.getContext("2d");
-  g.clearRect(0, 0, W, H);
-  for (const l of layers) {
-    if (!l.visible) continue;
-    g.save();
-    g.globalAlpha = l.opacity;
-    g.globalCompositeOperation = l.blend;
-    g.filter = filter(l);
-    g.drawImage(l.c, l.x, l.y);
-    g.restore();
-  }
-  return target;
+  return documentRenderer.render({ width: W, height: H, layers }, target);
 }
 let renderFrame = 0,
   lastCompositeKey = "",
