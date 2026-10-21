@@ -161,7 +161,7 @@ test("All script and style references exist, parse and preserve deterministic lo
     new vm.Script(fs.readFileSync(path.join(root, filename), "utf8"));
   assert(fs.existsSync(path.join(root, "styles/editor.css")));
   assert(!/<script>/.test(html));
-  assert(html.includes("v0.4.9"));
+  assert(html.includes("v0.5.0-alpha.1"));
 });
 test("Split editor retains v2 vectors, selections, views and workspace compatibility", async () => {
   const { run } = editor();
