@@ -11,6 +11,21 @@ const {
 const path = require("node:path");
 const { pathToFileURL, fileURLToPath } = require("node:url");
 const { createFileService } = require("./files.cjs");
+const smokeMode = process.argv.includes("--smoke-test");
+let smokeRoot = null,
+  smokeSaveCount = 0,
+  smokeStarted = false;
+if (smokeMode) {
+  const fs = require("node:fs");
+  smokeRoot = fs.mkdtempSync(
+    path.join(require("node:os").tmpdir(), "picturesque-smoke-"),
+  );
+  app.setPath("userData", path.join(smokeRoot, "profile"));
+  setTimeout(() => {
+    console.error("PACKAGED_WINDOWS_SMOKE_TIMEOUT");
+    app.exit(1);
+  }, 30000).unref();
+}
 const entry = path.join(__dirname, "..", "index.html");
 let window,
   files,
@@ -168,6 +183,8 @@ if (!app.requestSingleInstanceLock()) {
     files = createFileService({
       userData: app.getPath("userData"),
       chooseSave: async ({ name, extension }) => {
+        if (smokeMode)
+          return path.join(smokeRoot, `smoke-${++smokeSaveCount}.picturesque`);
         const result = await dialog.showSaveDialog(window, {
           defaultPath: name,
           filters: [
@@ -288,7 +305,9 @@ if (!app.requestSingleInstanceLock()) {
       ready = false;
       discardApproved = false;
     });
-    window.once("ready-to-show", () => window.show());
+    window.once("ready-to-show", () => {
+      if (!smokeMode) window.show();
+    });
     ipcMain.handle("picturesque:open", async (event, kind) => {
       assertTrusted(event);
       if (!["project", "workspace"].includes(kind))
@@ -339,6 +358,14 @@ if (!app.requestSingleInstanceLock()) {
       if (trusted(event)) {
         ready = true;
         deliverFiles();
+        if (smokeMode && !smokeStarted) {
+          smokeStarted = true;
+          require("./smoke.cjs").runPackagedSmoke({
+            window,
+            app,
+            root: smokeRoot,
+          });
+        }
       }
     });
     createMenu();
