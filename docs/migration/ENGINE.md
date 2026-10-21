@@ -14,11 +14,11 @@ Decision: evaluate; not adopted or loaded into production.
 | apps/photocraft-web/src/main.rs | Browser shell runs the same egui application through eframe and wasm-bindgen | Existing web build is not a drop-in JavaScript engine for our HTML interface |
 | apps/photocraft-web/Cargo.toml | Web shell directly depends on egui and photocraft-ui-egui | Build a separate wrapper around lower-level crates; do not embed the candidate UI |
 
-This is a source/API assessment. No PhotoCraft compilation, rendering benchmark or feature-parity validation has been completed. The local environment has no Cargo executable. The full dependency graph and browser compatibility remain to be checked in a build-capable environment. README feature claims do not count as passed acceptance tests.
+This is a source/API assessment. At the initial assessment, no PhotoCraft compilation, rendering benchmark or feature-parity validation had been completed. The local environment has no Cargo executable. The full dependency graph and browser compatibility remain to be checked in a build-capable environment. README feature claims do not count as passed acceptance tests.
 
 #### Proposed integration boundary
 
-Picturesque keeps its existing HTML/CSS, menus, tools and dialogs. A narrow asynchronous bridge translates editor actions and document state into calls to a separately compiled WASM engine. This bridge is proposed, not implemented. No runtime dependency or external network request has been added.
+Picturesque keeps its existing HTML/CSS, menus, tools and dialogs. A narrow asynchronous bridge translates editor actions and document state into calls to a separately compiled WASM engine. The initial production rendering boundary is implemented in src/engine.js with Canvas2D as its sole backend. The WASM bridge is a separate synthetic compositor probe, not a user-document adapter. No external runtime network request has been added.
 
 | Boundary | Responsibility |
 |---|---|
@@ -45,3 +45,11 @@ Do not silently flatten unsupported text/vector/selection data or overwrite orig
 If the headless build or editable-state mapping is unsuitable, evaluate a modular PixiJS rendering route with selected processing/file components. Do not introduce multiple competing canvas engines merely to collect features.
 
 See [baseline and acceptance checklist](BASELINE.md). Existing production rendering and save semantics remain the reference until these gates pass.
+
+#### Rewrite increment 0.5.0-alpha.1
+
+The production editor now delegates composition to a stateless renderer accepting document dimensions and ordered layer descriptors. Existing canvas sources, alpha/blend/adjustment semantics and synchronous callers are retained. This isolates rendering from DOM/editor globals without introducing a second document/history store.
+
+The separate engine/photocraft-probe crate pins PhotoCraft's document/compositor crates to the reviewed revision and wasm-bindgen to 0.2.105. It validates dimensions before constructing a small synthetic red image. Native tests verify pixels and input limits; the GitHub workflow compiles WASM, generates its browser loader and uploads a standalone harness. The harness verifies every pixel before reporting PASS. Compilation or native tests do not substitute for running that harness in a browser.
+
+Run the workflow from GitHub Actions. Download Picturesque-engine-probe, extract it and serve the folder over HTTP, for example with python -m http.server 8000. Open http://localhost:8000. It does not modify the live editor or user files. No engine project importer, painting adapter or history bridge is claimed yet. Source revisions are pinned; a resolved Cargo lockfile and complete dependency/licence audit are still required before production adoption.
