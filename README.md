@@ -1,4 +1,4 @@
-##### Picturesque
+### Picturesque
 
 A browser-based image editor for layered graphics, photo editing, and creative projects.
 
