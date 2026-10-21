@@ -17,7 +17,7 @@ First runtime rewrite increment. Current interface preserved; project format rem
 | Interface preservation | Original markup/styles/icons/menu code verified after normalising only the version label and added engine script |
 | Windows | Automatic packaging paused; manual workflow retained until browser acceptance |
 
-All 15 JavaScript regression tests passed locally and on GitHub. Live browser startup, layer add/undo/redo and the export settings dialog passed smoke checks. The pinned PhotoCraft probe passed native pixel/input-limit tests and compiled to WebAssembly; browser-loader packaging and actual WASM execution require separate verification. Rust compilation and real-browser probe results are tracked separately in the engine workflow; this release does not claim PhotoCraft feature parity or performance gains. Existing tools and file adapters remain the authority for editable state and history. The probe has no user-project importer and cannot overwrite projects.
+All 15 JavaScript regression tests passed locally and on GitHub. Live browser startup, layer add/undo/redo and the export settings dialog passed smoke checks. The pinned PhotoCraft probe passed native pixel/input-limit tests and compiled to WebAssembly; browser-loader packaging also passed, while actual WASM execution requires separate verification. Rust compilation and real-browser probe results are tracked separately in the engine workflow; this release does not claim PhotoCraft feature parity or performance gains. Existing tools and file adapters remain the authority for editable state and history. The probe has no user-project importer and cannot overwrite projects.
 
 #### Migration foundation, 22 October 2026
 
