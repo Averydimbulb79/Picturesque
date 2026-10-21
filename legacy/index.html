@@ -1,0 +1,473 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob:; connect-src 'self' https://fonts.google.com https://fonts.googleapis.com https://fonts.gstatic.com; object-src 'none'; base-uri 'none'; form-action 'none'"
+    />
+    <title>Picturesque 0.4.9 | Image studio</title>
+    <link rel="stylesheet" href="styles/editor.css" />
+  </head>
+  <body>
+    <header>
+      <h1>
+        <span class="brand-icon">P</span>Picturesque<span>.</span
+        ><small class="version">v0.4.9</small>
+      </h1>
+      <button id="new">New canvas</button><button id="open">Open image</button
+      ><button id="import">Add image layer</button
+      ><button id="load">Open project</button
+      ><button id="save">Save project</button>
+      <div class="studio-menus" aria-label="Application menus">
+        <div class="menu-wrap">
+          <button class="menu-trigger" data-menu="file" aria-expanded="false">
+            File
+          </button>
+          <div class="menu-popup" data-popup="file" hidden></div>
+        </div>
+        <div class="menu-wrap">
+          <button class="menu-trigger" data-menu="edit" aria-expanded="false">
+            Edit
+          </button>
+          <div class="menu-popup" data-popup="edit" hidden></div>
+        </div>
+        <div class="menu-wrap">
+          <button class="menu-trigger" data-menu="image" aria-expanded="false">
+            Image
+          </button>
+          <div class="menu-popup" data-popup="image" hidden></div>
+        </div>
+        <div class="menu-wrap">
+          <button class="menu-trigger" data-menu="layer" aria-expanded="false">
+            Layer
+          </button>
+          <div class="menu-popup" data-popup="layer" hidden></div>
+        </div>
+        <div class="menu-wrap">
+          <button class="menu-trigger" data-menu="select" aria-expanded="false">
+            Select
+          </button>
+          <div class="menu-popup" data-popup="select" hidden></div>
+        </div>
+        <div class="menu-wrap">
+          <button class="menu-trigger" data-menu="view" aria-expanded="false">
+            View
+          </button>
+          <div class="menu-popup" data-popup="view" hidden></div>
+        </div>
+        <div class="menu-wrap">
+          <button class="menu-trigger" data-menu="help" aria-expanded="false">
+            Help
+          </button>
+          <div class="menu-popup" data-popup="help" hidden></div>
+        </div>
+      </div>
+      <span class="header-spacer"></span
+      ><button
+        id="commands"
+        class="header-secondary"
+        title="Commands (Ctrl/Cmd+K)"
+      >
+        Commands</button
+      ><button
+        id="toggleInspector"
+        class="header-secondary"
+        aria-expanded="true"
+        title="Toggle inspector"
+      >
+        Inspector</button
+      ><button
+        id="fullscreen"
+        class="header-secondary"
+        aria-label="Enter fullscreen"
+        title="Enter fullscreen"
+      >
+        Fullscreen</button
+      ><button id="export" class="primary">Export image</button
+      ><button id="help">?</button>
+    </header>
+    <div class="document-strip">
+      <span id="documentName" hidden>Untitled canvas</span>
+      <div id="documentTabs" role="tablist" aria-label="Open documents"></div>
+      <button
+        id="newDocumentTab"
+        title="New document"
+        aria-label="New document"
+      >
+        +</button
+      ><span class="privacy"><i></i> Your images stay on your device</span>
+    </div>
+    <div class="options">
+      <span class="tool-name" id="toolName">Move</span
+      ><label>Colour <input id="color" type="color" value="#a7edb3" /></label
+      ><label
+        >Size
+        <input id="size" type="number" min="1" max="500" value="24" /></label
+      ><label
+        >Zoom
+        <select id="zoom">
+          <option value="0.25">25%</option>
+          <option value="0.5">50%</option>
+          <option value="0.75">75%</option>
+          <option value="1" selected>100%</option>
+          <option value="1.5">150%</option>
+          <option value="2">200%</option>
+        </select></label
+      ><button id="fit">Fit</button><button id="undo">Undo</button
+      ><button id="redo">Redo</button
+      ><button id="cropApply" hidden>Apply crop</button
+      ><span id="penControls" hidden
+        ><select id="penSource" aria-label="Path source">
+          <option value="document">Document paths</option>
+          <option value="layer">Selected vector layer</option></select
+        ><select id="penMode" aria-label="Pen action">
+          <option value="draw">Pen: draw</option>
+          <option value="edit">Direct selection</option>
+          <option value="add">Add anchor</option>
+          <option value="remove">Delete anchor</option>
+          <option value="convert">Convert point</option></select
+        ><select id="penPathList" aria-label="Saved paths"></select
+        ><button id="penNew">New path</button
+        ><button id="penFinish">Finish</button
+        ><button id="penClose">Close path</button
+        ><button id="penDeleteAnchor">Delete anchor</button
+        ><button id="penConvert">Corner / smooth</button
+        ><button id="penVector">Vector layer</button
+        ><button id="penDuplicate">Duplicate path</button
+        ><button id="penFill">Fill</button
+        ><label
+          >Stroke
+          <input
+            id="penStrokeWidth"
+            type="number"
+            min="0.1"
+            max="500"
+            step="0.1"
+            value="3"
+          />px</label
+        ><button id="penStroke">Stroke</button
+        ><button id="penSelection">Make selection</button
+        ><button id="penRename">Rename</button
+        ><button id="penDelete">Delete path</button
+        ><button id="penSVG">SVG</button></span
+      ><label id="gradientTypeLabel" hidden
+        >Gradient
+        <select id="gradientType">
+          <option value="linear">Linear</option>
+          <option value="radial">Radial</option>
+        </select></label
+      ><button id="gradientSettings" hidden>Edit gradient</button
+      ><label id="gradientOpacityLabel" hidden
+        >Opacity
+        <input
+          id="gradientOpacity"
+          type="number"
+          min="1"
+          max="100"
+          value="100"
+        />%</label
+      ><label id="gradientReverseLabel" hidden
+        ><input id="gradientReverse" type="checkbox" />Reverse</label
+      ><label id="bucketOpacityLabel" hidden
+        >Fill opacity
+        <input
+          id="bucketOpacity"
+          type="number"
+          min="1"
+          max="100"
+          value="100"
+        />%</label
+      ><label id="wandToleranceLabel" hidden
+        >Tolerance
+        <input
+          id="wandTolerance"
+          type="number"
+          min="0"
+          max="255"
+          value="32" /></label
+      ><label id="wandContiguousLabel" hidden
+        ><input id="wandContiguous" type="checkbox" checked /> Contiguous</label
+      ><label id="wandMergedLabel" hidden
+        ><input id="wandMerged" type="checkbox" checked /> Sample merged</label
+      ><button id="clearSelected">Clear selected pixels</button
+      ><button id="pasteImage">Paste image</button
+      ><span
+        id="clipboardStatus"
+        role="status"
+        aria-live="polite"
+        class="quiet"
+      ></span
+      ><label id="selectionShapeLabel" hidden
+        >Shape
+        <select id="selectionShape">
+          <option value="rectangle">Rectangle</option>
+          <option value="ellipse">Ellipse</option>
+          <option value="lasso">Freehand lasso</option>
+        </select></label
+      ><label id="snapGuidesLabel" hidden
+        ><input id="snapGuides" type="checkbox" checked />Snap to guides</label
+      ><label id="selectionModeLabel" hidden
+        >Mode
+        <select id="selectionMode">
+          <option value="replace">Replace</option>
+          <option value="add">Add</option>
+          <option value="subtract">Subtract</option>
+          <option value="intersect">Intersect</option>
+        </select></label
+      ><label id="selectionPresetLabel" hidden
+        >Select
+        <select id="selectionPreset">
+          <option value="">Choose pixels…</option>
+          <option value="white">White</option>
+          <option value="black">Black</option>
+          <option value="custom">Custom colour / range</option>
+          <option value="transparent">Transparent</option>
+          <option value="all">All</option>
+        </select></label
+      ><button id="invertSelection" hidden aria-pressed="false">
+        Invert selection</button
+      ><button id="deselect">Deselect</button
+      ><button id="canvasSize">Canvas size</button
+      ><span
+        id="fullscreenNotice"
+        class="quiet"
+        role="status"
+        aria-live="polite"
+      ></span
+      ><span id="hint" class="quiet">Drag to move the selected layer</span>
+    </div>
+    <div class="workspace">
+      <nav aria-label="Tools">
+        <button data-tool="move" class="active">↖<br />Move</button
+        ><button data-tool="brush">✎<br />Brush</button
+        ><button data-tool="gradient" aria-label="Gradient (Shift+G)">
+          Gradient</button
+        ><button data-tool="bucket" aria-label="Paint bucket (G)">Bucket</button
+        ><button data-tool="erase">▱<br />Eraser</button
+        ><button data-tool="select">▧<br />Select</button
+        ><button data-tool="wand" aria-label="Magic wand (W)">Wand</button
+        ><button data-tool="crop">⌗<br />Crop</button
+        ><button data-tool="pen" aria-label="Pen tool (P)">Pen</button
+        ><button data-tool="text">T<br />Text</button
+        ><button data-tool="rect">□<br />Box</button
+        ><button data-tool="ellipse">○<br />Ellipse</button
+        ><button data-tool="pick">◉<br />Pick</button>
+      </nav>
+      <div id="workspaceViewport">
+        <div id="rulerCorner" aria-hidden="true"></div>
+        <canvas
+          id="rulerHorizontal"
+          aria-label="Horizontal pixel ruler; drag down to add a horizontal guide"
+        ></canvas
+        ><canvas
+          id="rulerVertical"
+          aria-label="Vertical pixel ruler; drag right to add a vertical guide"
+        ></canvas>
+        <main id="stage">
+          <div id="paper">
+            <canvas id="canvas" aria-label="Image editing canvas"></canvas
+            ><canvas id="overlay"></canvas>
+            <div id="guideLayer" aria-label="Canvas guides"></div>
+          </div>
+        </main>
+      </div>
+      <aside>
+        <div class="inspector-tabs" role="tablist" aria-label="Inspector">
+          <button
+            role="tab"
+            data-tab="layerPanel"
+            aria-selected="true"
+            aria-controls="layerPanel"
+          >
+            Layers</button
+          ><button
+            role="tab"
+            data-tab="propertyPanel"
+            aria-selected="false"
+            aria-controls="propertyPanel"
+          >
+            Properties</button
+          ><button
+            role="tab"
+            data-tab="adjustPanel"
+            aria-selected="false"
+            aria-controls="adjustPanel"
+          >
+            Adjustments</button
+          ><button
+            role="tab"
+            data-tab="historyPanel"
+            aria-selected="false"
+            aria-controls="historyPanel"
+          >
+            History
+          </button>
+        </div>
+        <section class="inspector-section" id="layerPanel" role="tabpanel">
+          <h2>Layer stack</h2>
+          <div class="row">
+            <button id="add">+ Layer</button
+            ><button id="duplicate">Duplicate</button
+            ><button id="delete">Delete</button>
+          </div>
+          <div id="layers"></div>
+          <div class="row">
+            <button id="up">Move up</button><button id="down">Move down</button
+            ><button id="rename">Rename</button>
+          </div>
+        </section>
+        <section
+          class="inspector-section"
+          id="propertyPanel"
+          role="tabpanel"
+          hidden
+        >
+          <h2>Selected layer</h2>
+          <div class="row">
+            <button id="editText">Edit text</button
+            ><button id="rasterizeText">Rasterise text</button>
+          </div>
+          <label
+            >Opacity
+            <input
+              id="opacity"
+              type="range"
+              min="0"
+              max="100"
+              value="100" /></label
+          ><label
+            >Blend mode
+            <select id="blend">
+              <option value="source-over">Normal</option>
+              <option>multiply</option>
+              <option>screen</option>
+              <option>overlay</option>
+              <option>darken</option>
+              <option>lighten</option>
+            </select></label
+          >
+          <h2>Vector layer</h2>
+          <div class="row">
+            <button id="vectorStyle">Fill / stroke</button
+            ><button id="vectorEdit">Edit paths</button
+            ><button id="vectorRasterize">Rasterise vector</button>
+          </div>
+          <h2>Transform layer</h2>
+          <div class="row">
+            <button id="left">Rotate ↶</button
+            ><button id="right">Rotate ↷</button>
+          </div>
+          <div class="row">
+            <button id="flipX">Flip horizontal</button
+            ><button id="flipY">Flip vertical</button>
+          </div>
+          <div class="row"><button id="scale">Resize layer</button></div>
+        </section>
+        <section
+          class="inspector-section"
+          id="adjustPanel"
+          role="tabpanel"
+          hidden
+        >
+          <h2>Colour & tone</h2>
+          <label
+            >Brightness
+            <input
+              id="brightness"
+              type="range"
+              min="0"
+              max="200"
+              value="100" /></label
+          ><label
+            >Contrast
+            <input
+              id="contrast"
+              type="range"
+              min="0"
+              max="200"
+              value="100" /></label
+          ><label
+            >Saturation
+            <input id="saturation" type="range" min="0" max="200" value="100"
+          /></label>
+          <div class="row"><button id="reset">Reset adjustments</button></div>
+        </section>
+        <section
+          class="inspector-section"
+          id="historyPanel"
+          role="tabpanel"
+          hidden
+        >
+          <h2>Document history</h2>
+          <p id="historySummary" class="quiet"></p>
+          <div id="historyList"></div>
+        </section>
+        <div class="inspector-note">
+          Make something worth keeping.<br />Save a project to preserve your
+          layers.<br />Ctrl / ⌘ K to find any command.
+        </div>
+      </aside>
+    </div>
+    <footer class="status">
+      <span id="status"></span
+      ><span id="projectSaveStatus" role="status" aria-live="polite"
+        >Project: download a copy to keep</span
+      ><span id="autosaveStatus" role="status" aria-live="polite"
+        >Recovery ready</span
+      ><span>Picturesque · Browser image studio</span>
+    </footer>
+    <input
+      type="file"
+      id="imageFile"
+      accept="image/png,image/jpeg,image/webp,image/gif,image/bmp,image/svg+xml"
+      hidden
+    /><input
+      type="file"
+      id="workspaceFile"
+      accept=".picturesque-workspace,.json"
+      hidden
+    /><input type="file" id="projectFile" accept=".json,.picturesque" hidden />
+    <dialog id="dialog">
+      <form id="form">
+        <h2 id="dialogTitle"></h2>
+        <div id="fields"></div>
+        <div class="row">
+          <button type="button" id="cancel">Cancel</button
+          ><button type="submit" class="primary">Apply</button>
+        </div>
+      </form>
+    </dialog>
+    <dialog id="commandDialog">
+      <h2>What would you like to do?</h2>
+      <input
+        id="commandSearch"
+        type="search"
+        placeholder="Search tools and actions…"
+        aria-label="Search commands"
+      />
+      <div id="commandResults"></div>
+      <p class="quiet">Enter runs the first result · Esc closes</p>
+    </dialog>
+    <script defer src="src/platform.js"></script>
+    <script defer src="src/state.js"></script>
+    <script defer src="src/rendering.js"></script>
+    <script defer src="src/history.js"></script>
+    <script defer src="src/project-format.js"></script>
+    <script defer src="src/editor-tools.js"></script>
+    <script defer src="src/files.js"></script>
+    <script defer src="src/navigation.js"></script>
+    <script defer src="src/vectors.js"></script>
+    <script defer src="src/selections.js"></script>
+    <script defer src="src/gradients.js"></script>
+    <script defer src="src/clipboard.js"></script>
+    <script defer src="src/guides.js"></script>
+    <script defer src="src/canvas.js"></script>
+    <script defer src="src/recovery.js"></script>
+    <script defer src="src/text.js"></script>
+    <script defer src="src/interface.js"></script>
+    <script defer src="src/desktop-integration.js"></script>
+    <script defer src="src/bootstrap.js"></script>
+  </body>
+</html>
