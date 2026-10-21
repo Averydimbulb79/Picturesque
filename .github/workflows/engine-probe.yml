@@ -1,0 +1,31 @@
+name: PhotoCraft engine probe
+on:
+  push:
+    branches: [main]
+    paths: ['engine/**', '.github/workflows/engine-probe.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  wasm:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install pinned Rust toolchain
+        run: rustup toolchain install 1.95.0 --profile minimal --target wasm32-unknown-unknown
+      - name: Verify synthetic compositor and input limits
+        run: cargo +1.95.0 test --manifest-path engine/photocraft-probe/Cargo.toml
+      - name: Build browser probe
+        run: cargo +1.95.0 build --manifest-path engine/photocraft-probe/Cargo.toml --target wasm32-unknown-unknown --release
+      - name: Generate browser loader
+        run: |
+          cargo +1.95.0 install wasm-bindgen-cli --version 0.2.105 --locked
+          mkdir -p engine/photocraft-probe/harness/pkg
+          wasm-bindgen --target web --out-dir engine/photocraft-probe/harness/pkg engine/photocraft-probe/target/wasm32-unknown-unknown/release/picturesque_engine_probe.wasm
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Picturesque-engine-probe
+          path: engine/photocraft-probe/harness/
+          if-no-files-found: error
+          retention-days: 14
