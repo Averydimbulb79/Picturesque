@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<title>Picturesque engine probe</title>
+<h1>Picturesque engine probe</h1>
+<p id="status">Loading isolated PhotoCraft test…</p>
+<canvas id="preview" width="64" height="64"></canvas>
+<p>This synthetic test does not open or modify your projects.</p>
+<script type="module">
+import init, { render_probe } from "./pkg/picturesque_engine_probe.js";
+const status = document.getElementById("status");
+try {
+  await init();
+  const bytes = render_probe(64, 64);
+  if (bytes.length !== 64 * 64 * 4 ||
+      !bytes.every((value, index) => value === [255, 0, 0, 255][index % 4])) {
+    throw new Error("Unexpected compositor pixels");
+  }
+  const context = document.getElementById("preview").getContext("2d");
+  context.putImageData(new ImageData(new Uint8ClampedArray(bytes), 64, 64), 0, 0);
+  status.textContent = "PASS: PhotoCraft rendered 4096 opaque red pixels through WebAssembly.";
+} catch (error) {
+  status.textContent = "FAIL: " + error.message;
+}
+</script>
+</html>
