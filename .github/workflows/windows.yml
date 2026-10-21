@@ -1,16 +1,5 @@
 name: Windows preview
 on:
-  push:
-    branches: [main]
-    paths:
-      - 'src/**'
-      - 'styles/**'
-      - 'desktop/**'
-      - 'tests/**'
-      - 'index.html'
-      - 'package*.json'
-      - '.github/workflows/windows.yml'
-  pull_request:
   workflow_dispatch:
 permissions:
   contents: read
