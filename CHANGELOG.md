@@ -4,6 +4,21 @@
 
 The README describes the current release. Archived notes below describe behaviour at the time they were written; older limits, pending features and roadmap numbering may have been superseded.
 
+#### 0.5.0-alpha.1, 22 October 2026
+
+First runtime rewrite increment. Current interface preserved; project format remains v2.
+
+| Change | Result |
+|---|---|
+| Rendering boundary | Display, merged sampling/previews and exports delegate compositing to a DOM-independent Canvas2D engine |
+| Renderer checks | Layer order, visibility, blend, alpha, adjustments, offsets, interleaved documents and error cleanup covered |
+| PhotoCraft probe | Separate pinned Rust crate renders a bounded synthetic image; native pixel tests and a WASM browser harness |
+| Build pipeline | GitHub workflow tests/compiles the probe and packages its browser loader; production does not load it |
+| Interface preservation | Original markup/styles/icons/menu code verified after normalising only the version label and added engine script |
+| Windows | Automatic packaging paused; manual workflow retained until browser acceptance |
+
+All 15 JavaScript regression tests passed locally. Rust compilation and real-browser probe results are tracked separately in the engine workflow; this release does not claim PhotoCraft feature parity or performance gains. Existing tools and file adapters remain the authority for editable state and history. The probe has no user-project importer and cannot overwrite projects.
+
 #### Migration foundation, 22 October 2026
 
 Application remains v0.4.9; no runtime or project-format changes.
@@ -21,6 +36,7 @@ Source checks do not substitute for browser screenshots, pixel comparisons or fu
 
 | Version | Main change |
 |---|---|
+| 0.5.0-alpha.1 | Renderer boundary and isolated PhotoCraft WASM probe |
 | 0.4.9 | Shared feature files and Windows preview: native file access, recovery, installer build and regression tests |
 | 0.4.7 | Native project v2, portable workspace backups, editable vector layers and compound paths |
 | 0.4.3 | Format dropdown and extended image export settings |
